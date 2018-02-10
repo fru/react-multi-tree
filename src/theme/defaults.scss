@@ -1,0 +1,101 @@
+.anyform-tree {
+
+  .node {
+    margin-bottom: $vertical-spacing;
+  }
+
+  .node-anchor {
+    position: relative;
+  }
+
+  .list-container {
+    margin-left: 18px;
+    margin-top: -($vertical-spacing + $target-overlay);
+    padding-top: ($vertical-spacing + $target-overlay);
+
+    .list-container-inner {
+      z-index: 3;
+      position: relative;
+    }
+  }
+
+  .group-container {
+    margin-bottom: $vertical-spacing;
+  }
+
+  // Single Nodes In Row
+  .target-anchor {
+    position: relative;
+    .target {
+      z-index: 2;
+      height: 0;
+      overflow: hidden;
+      position: absolute;
+      width: 100%;
+
+      &.dragging {
+        //background-color: rgba(1,1,1,0.15);
+        height: 2 * $target-overlay + $vertical-spacing;
+        top: -($target-overlay + $vertical-spacing);
+
+        // Important that the targets become "slowly" visible to not abort the drag
+        -webkit-transition: height 500ms;
+        -moz-transition: height 500ms;
+        -ms-transition: height 500ms;
+        -o-transition: height 500ms;
+        transition: height 500ms;
+      }
+
+      .preview {
+        position: absolute;
+        background-color: $color-highlight;
+        height: $vertical-spacing;
+        left: 0;
+        right: 0;
+        top: $target-overlay;
+      }
+    }
+  }
+
+  // Multiple Nodes In Row
+  .node-multi-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 (-$vertical-spacing);
+    overflow: hidden;
+    .node {
+      flex-grow: 1;
+    }
+    .target-anchor {
+      width: $vertical-spacing;
+      .target {
+        z-index: 4;
+        width: 0;
+        &.dragging {
+          width: 2 * $target-overlay + $vertical-spacing;
+          height: auto;
+          top: 0;
+          left: -$target-overlay;
+          bottom: 0;
+
+          // Important that the targets become "slowly" visible to not abort the drag
+          -webkit-transition: width 500ms;
+          -moz-transition: width 500ms;
+          -ms-transition: width 500ms;
+          -o-transition: width 500ms;
+          transition: width 500ms;
+        }
+        .preview {
+          width: $vertical-spacing;
+          left: $target-overlay;
+          top: 0;
+          bottom: $vertical-spacing;
+          right: auto;
+          height: auto;
+        }
+      }
+    }
+  }
+
+
+}
