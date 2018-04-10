@@ -2,28 +2,28 @@ import React from 'react';
 
 class Path {
 	constructor(path) {
-		this.path = path ? path.slice() : [];
+		this._path = path ? path.slice() : [];
     }
     
 	add(segment) {
-		return this.path.concat(Array.isArray(segment) ? segment: [segment]);
+		return this._path.concat(Array.isArray(segment) ? segment: [segment]);
     }
 
     clone(transform) {
         transform = transform || (x => x);
-        return new Path(transform(this.path));
+        return new Path(transform(this._path));
     }
 
     _differentPrefix(prefix, lengthChecked) {
         for(var i = 0; i < lengthChecked; i++) {
-            if (this.path[i] !== prefix[i]) return true;
+            if (this._path[i] !== prefix[i]) return true;
         }
     }
 
     recalculateAfterDetach (detached) {
         var index = detached.length - 1;
         if (this._differentPrefix(detached, index)) return this;
-        if (this.path[index] < detached[index]) return this;
+        if (this._path[index] < detached[index]) return this;
         return this.clone(path => { path[index]--; return path; });
     }
 }
