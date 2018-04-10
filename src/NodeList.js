@@ -55,5 +55,5 @@ export const NodeListChildGroups = ({ groups, path, ...context }) => groups.map(
 
 // Initial simple root list
 
-export const NodeListRoot = (props) => <NodeList {...props} path={props.options.rootPath} 
+export const NodeListRoot = (props) => <NodeList {...props} path={new props.option.Path()} 
 	tree={props.list} wrapper={props.options.cx('anyform-tree')} />;

@@ -1,23 +1,31 @@
 import React from 'react';
 
 class Path {
-	constructor(segments) {
-		this.segments = segments || [];
-	}
+	constructor(path) {
+		this.path = path ? path.slice() : [];
+    }
+    
 	add(segment) {
-		return new Path(this.segments.concat([segment]));
-	}
-	recalculateAfterDetach(detached, options) {
-		var path = this.segments.slice();
-		var last = detached.segments.length - 1;
+		return this.path.concat(Array.isArray(segment) ? segment: [segment]);
+    }
 
-		for(var i = 0; i < last; i++) {
-			if (path[i] !== detached.segments[i]) return this;
-		}
-		if (path[last] < detached.segments[last]) return this;
-		path[last]--; 
-		return new Path(path);
-	}
+    clone(transform) {
+        transform = transform || (x => x);
+        return new Path(transform(this.path));
+    }
+
+    _differentPrefix(prefix, lengthChecked) {
+        for(var i = 0; i < lengthChecked; i++) {
+            if (this.path[i] !== prefix[i]) return true;
+        }
+    }
+
+    recalculateAfterDetach (detached) {
+        var index = detached.length - 1;
+        if (this._differentPrefix(detached, index)) return this;
+        if (this.path[index] < detached[index]) return this;
+        return this.clone(path => { path[index]--; return path; });
+    }
 }
 
 export const buildDefaultOptions = () => {
@@ -42,12 +50,12 @@ export const buildDefaultOptions = () => {
         // Helper
 
         beginDrag: ({ options, path, list, index }) => ({item: list[index], path}),
-        rootPath: new Path(),
+        Path: Path,
 
         // Modify tree
 
         getPath: function (context, path) {
-            for(var i = 0; i < path.length; i++) {
+            for (var i = 0; i < path.length; i++) {
                 context = context[path[i]];
             }
             return context;
@@ -83,6 +91,9 @@ export const buildDefaultOptions = () => {
             options.onChange(tree);
         },
 
+        canDrop: function(tree, from, to, options) {
+            // Check from -> to and to -> from
+        },
 
         // Groups of child components
 
