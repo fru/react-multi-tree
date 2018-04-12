@@ -10,6 +10,9 @@ export default {
   external: [ 'react' ], 
   plugins: [
     postcss({modules: true}), 
-    babel({exclude: 'node_modules/**'})
+    babel({
+      exclude: 'node_modules/**',
+      presets: ['es2015-rollup']
+    })
   ]
 };

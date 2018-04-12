@@ -44,7 +44,7 @@ export const NodeListChildGroups = ({ groups, path, ...context }) => groups.map(
 
 	let titleClass = context.options.cx('group-container');
 	let title = group.title && <div className={titleClass}>{group.title}</div>
-
+	console.log(path);
 	let list = <NodeList {...context} 
 		path={path.add(group.path)} isMultiNode={false} list={group.value}
 		wrapper={context.options.cx('list-container-inner')} />
@@ -55,5 +55,5 @@ export const NodeListChildGroups = ({ groups, path, ...context }) => groups.map(
 
 // Initial simple root list
 
-export const NodeListRoot = (props) => <NodeList {...props} path={new props.option.Path()} 
+export const NodeListRoot = (props) => <NodeList {...props} path={new props.options.Path()} 
 	tree={props.list} wrapper={props.options.cx('anyform-tree')} />;

@@ -4,9 +4,13 @@ class Path {
 	constructor(path) {
 		this._path = path ? path.slice() : [];
     }
+
+    asArray() {
+        return this._path.slice();
+    }
     
 	add(segment) {
-		return this._path.concat(Array.isArray(segment) ? segment: [segment]);
+		return new Path(this._path.concat(Array.isArray(segment) ? segment: [segment]));
     }
 
     clone(transform) {
@@ -51,6 +55,7 @@ export const buildDefaultOptions = () => {
 
         beginDrag: ({ options, path, list, index }) => ({item: list[index], path}),
         Path: Path,
+        classes: {},
 
         // Modify tree
 
@@ -67,7 +72,7 @@ export const buildDefaultOptions = () => {
         
         onDropUnnormalized: function (tree, path, options, item) {
             var recalc = path.recalculateAfterDetach(item.path);
-            options.onDrop(tree, item.path.segments, recalc.segments, options, item.item);
+            options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item);
         },
         
         onDrop: function (tree, from, to, options, node) {

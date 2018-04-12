@@ -5,8 +5,6 @@ import { DragSource, DropTarget } from 'react-dnd';
 
 import classNames from 'classnames/bind';
 
-import styles from './theme/example.scss';
-
 import { startsMultiRow, NodeListMultiRow, NodeListChildGroups, NodeListRoot } from './NodeList';
 import { buildDefaultOptions } from './options';
 
@@ -72,8 +70,8 @@ class Target extends Component {
 export class Tree extends Component {
 	defaults = buildDefaultOptions();
 	render() {
-		let cx = classNames.bind(styles);
-		let options = Object.assign(this.defaults, { Target, Node, styles, cx }, this.props);
+		let cx = classNames.bind(this.props.classes || this.defaults.classes);
+		let options = Object.assign(this.defaults, { Target, Node, cx }, this.props);
 		return <NodeListRoot list={this.props.nodes} options={options} />
 	}
 }
