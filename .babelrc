@@ -1,5 +1,5 @@
 {
-    "presets": ["react-plus"],
+    "presets": ["es2015", "react-plus"],
     "env": {
         "test": {
             "plugins": ["transform-es2015-modules-commonjs"]
