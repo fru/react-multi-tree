@@ -1,3 +1,7 @@
-example
-config
 .vscode
+config
+docs
+example
+node_modules
+screenshots
+

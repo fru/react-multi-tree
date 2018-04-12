@@ -22,8 +22,8 @@
     "test-ci-update": "npm run test-ci-build-storybook && loki update --reactUri file:./screenshots/static --reference ./screenshots/reference",
     "test-ci-storybook": "start-storybook -p 6006 -c config/storybook-testing",
     "test-ci-build-storybook": "build-storybook -c config/storybook-testing -o screenshots/static",
-    "demo": "start-storybook -p 6006 -c config/storybook-demo",
-    "build-demo": "build-storybook -c config/storybook-demo -o demo/build"
+    "docs": "start-storybook -p 6006 -c config/storybook-docs",
+    "docs-build": "build-storybook -c config/storybook-docs -o docs"
   },
   "author": "Florian Rüberg",
   "license": "MIT",

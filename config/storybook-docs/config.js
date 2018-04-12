@@ -4,7 +4,7 @@ import { configure } from '@storybook/react';
 import 'loki/configure-react';
 
 function loadStories() {
-  require('../../demo');
+  require('../../docs/story.js');
 }
 
 configure(loadStories, module);
