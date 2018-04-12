@@ -15,7 +15,7 @@
     "react"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && node-sass ./src/defaults.scss ./bundle.css",
     "test": "jest --coverage",
     "test-watch": "jest --watch",
     "test-ci": "npm run build-storybook && loki --requireReference --reactUri file:./screenshots/static --reference ./screenshots/reference --output ./screenshots/current --difference ./screenshots/difference",

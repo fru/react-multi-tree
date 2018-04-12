@@ -1,3 +1,8 @@
+$vertical-spacing: 5px;
+$horizontal-spacing: 18px;
+$target-overlay: 10px;
+$color-highlight: lighten(#079dc3, 6);
+
 .anyform-tree {
 
   .node {
@@ -9,7 +14,7 @@
   }
 
   .list-container {
-    margin-left: 18px;
+    margin-left: $horizontal-spacing;
     margin-top: -($vertical-spacing + $target-overlay);
     padding-top: ($vertical-spacing + $target-overlay);
 
@@ -96,6 +101,4 @@
       }
     }
   }
-
-
 }
