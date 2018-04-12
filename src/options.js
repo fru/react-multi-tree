@@ -1,36 +1,5 @@
 import React from 'react';
-
-class Path {
-	constructor(path) {
-		this._path = path ? path.slice() : [];
-    }
-
-    asArray() {
-        return this._path.slice();
-    }
-    
-	add(segment) {
-		return new Path(this._path.concat(Array.isArray(segment) ? segment: [segment]));
-    }
-
-    clone(transform) {
-        transform = transform || (x => x);
-        return new Path(transform(this._path));
-    }
-
-    _differentPrefix(prefix, lengthChecked) {
-        for(var i = 0; i < lengthChecked; i++) {
-            if (this._path[i] !== prefix[i]) return true;
-        }
-    }
-
-    recalculateAfterDetach (detached) {
-        var index = detached.length - 1;
-        if (this._differentPrefix(detached, index)) return this;
-        if (this._path[index] < detached[index]) return this;
-        return this.clone(path => { path[index]--; return path; });
-    }
-}
+import Path from './Path';
 
 export const buildDefaultOptions = () => {
 

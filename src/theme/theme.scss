@@ -8,7 +8,7 @@ $color-highlight-shadow: darken(desaturate($color-highlight, 40), 10);
 $color-highlight-action: lighten(desaturate($color-highlight, 30), 15);
 $color-group: darken($color-description, 25);
 
-@import "defaults";
+@import "../defaults";
 
 .anyform-tree {
   font-family: Arial, Helvetica, sans-serif;
