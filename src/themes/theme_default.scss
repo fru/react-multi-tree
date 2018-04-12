@@ -1,0 +1,48 @@
+$vertical-spacing: 5px;
+$horizontal-spacing: 18px;
+$target-overlay: 10px;
+$color-highlight: lighten(#079dc3, 6);
+
+@import "../defaults";
+
+.anyform-tree {
+  font-family: Arial, Helvetica, sans-serif;
+  
+  .node, .group-container {
+    font-size: 10px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .handler {
+    color: $color-highlight;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding-bottom: 5px;
+    letter-spacing: 0.8px;
+    padding-right: 6px;
+  }
+
+  .node {
+    color: #707070;
+    cursor: pointer;
+    border: 1px solid #dadada;
+    padding: 7px 8px;
+    border-radius: 4px;
+    background-color: white;
+
+    &.active {
+      background-color: lighten(#079dc3, 50);
+      border: 1px solid #c3c3c3;
+    }
+  }
+
+  .group-container {
+    color: darken(#707070, 25);
+    font-size: 11px;
+    padding: 5px 4px 3px;
+  }
+}

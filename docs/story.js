@@ -7,7 +7,7 @@ import { linkTo } from '@storybook/addon-links';
 import { Button, Welcome } from '@storybook/react/demo';
 import { Tree } from '../src/main';
 import { testdata } from '../example/testdata';
-import styles from '../src/theme/theme.scss';
+import styles from '../src/themes/theme_shadow.scss';
 
 class TreeWithState extends Component {
   constructor(props) {
