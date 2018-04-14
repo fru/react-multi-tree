@@ -80,7 +80,10 @@ class Target extends Component {
 
 @DragDropContext(HTML5Backend)
 export class Tree extends Component {
-	defaults = buildDefaultOptions();
+	constructor (props) {
+		super(props);
+		this.defaults = buildDefaultOptions(this); 
+	}
 	render() {
 		let cx = classNames.bind(this.props.classes || this.defaults.classes);
 		let options = Object.assign(this.defaults, { Target, Node, cx }, this.props);

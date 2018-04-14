@@ -2,9 +2,9 @@ import React from 'react';
 import Path from './Path';
 import SelectionManager from './SelectionManager';
 
-export const buildDefaultOptions = () => {
+export const buildDefaultOptions = ($tree) => {
 
-    var defaults = {
+    return {
 
         // Defaults
 
@@ -32,9 +32,10 @@ export const buildDefaultOptions = () => {
         },
 
         // Selection
-        selected: ['A'],
-        setSelected: function (value) {
-            defaults.selected = value;
+        selected: [],
+        setSelected: function (selected) {
+            this.selected = selected;
+            $tree.setState({});
         },
         isSelectionMulti: (e) => e.shiftKey,
         selectionManager: new SelectionManager(),
@@ -110,6 +111,4 @@ export const buildDefaultOptions = () => {
         	return results;
         }
     };
-
-    return defaults;
 }

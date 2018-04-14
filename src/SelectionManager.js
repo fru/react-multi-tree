@@ -20,13 +20,12 @@ export default function SelectionManager() {
             }
             cachedSelected = options.selected;
         }
-
-        return { selected: !!cachedSelectionMap[id], handler: cachedHandlers[id] };
+        console.log(cachedSelectionMap[id]);
+        return { selected: cachedSelectionMap[id], handler: cachedHandlers[id] };
     };
 }
 
 SelectionManager.prototype.select = function (e, id, options) {
-    console.log(arguments);
     if (options.isSelectionMulti(e)) {
         options.setSelected([id].concat(options.selected || []));
     } else {
