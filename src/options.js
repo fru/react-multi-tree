@@ -1,9 +1,10 @@
 import React from 'react';
 import Path from './Path';
+import SelectionManager from './SelectionManager';
 
 export const buildDefaultOptions = () => {
 
-    return {
+    var defaults = {
 
         // Defaults
 
@@ -12,9 +13,7 @@ export const buildDefaultOptions = () => {
         onChange: (modified) => {},
         
         node: function (node) {
-            let active = node.active;
-            
-			return <div className={this.cx('node', {active})}>
+			return <div> 
 				<span className={this.cx('handler')}>::</span>
 				{node.title}
 			</div>;
@@ -25,6 +24,20 @@ export const buildDefaultOptions = () => {
         beginDrag: ({ options, path, list, index }) => ({item: list[index], path}),
         Path: Path,
         classes: {},
+
+        // Id
+        propId: 'id',
+        getId: function (node) {
+            return node[this.propId];
+        },
+
+        // Selection
+        selected: ['A'],
+        setSelected: function (value) {
+            defaults.selected = value;
+        },
+        isSelectionMulti: (e) => e.shiftKey,
+        selectionManager: new SelectionManager(),
 
         // Modify tree
 
@@ -97,4 +110,6 @@ export const buildDefaultOptions = () => {
         	return results;
         }
     };
+
+    return defaults;
 }

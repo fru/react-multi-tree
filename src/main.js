@@ -8,6 +8,18 @@ import classNames from 'classnames/bind';
 import { startsMultiRow, NodeListMultiRow, NodeListChildGroups, NodeListRoot } from './NodeList';
 import { buildDefaultOptions } from './options';
 
+
+class NodeInner extends Component {
+	render() {
+		let { current, options, connectDragSource } = this.props;
+		let { selected, handler } = options.selectionManager.getNodeState(current, options);
+
+		return connectDragSource(<div className={options.cx('node', {selected})} onClick={handler}>
+			{options.node(current)}
+		</div>);
+	}
+}
+
 @DragSource('anyform-tree', {beginDrag: (p) => p.options.beginDrag(p)}, (connect, monitor) => ({
 	connectDragSource: connect.dragSource(),
 	isDragging: monitor.isDragging()
@@ -20,13 +32,13 @@ class Node extends Component {
 		let current = list[index];
 		
 		if (isMultiNode) {
-			return this.props.connectDragSource(options.node(current));
+			return <NodeInner current={current} {...this.props} />;
 		}
 
 		let groups = options.containsNormalized(current);
 		let row = startsMultiRow(current, options) 
 			? <NodeListMultiRow {...context} row={current} />
-			: this.props.connectDragSource(options.node(current));
+			: <NodeInner current={current} {...this.props} />;
 
 		return <div>
 			<div className={options.cx('node-anchor')}>{row}</div>
