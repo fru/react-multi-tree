@@ -119,8 +119,8 @@ export const defaultOptions = ($tree) => {
 			return false;
         },
 
-        targetActive: function (dragging, parentDragging, before, after) {
-            let item = dragging && dragging.item;
+        targetActive: function (item, parentDragging, before, after) {
+            // TODO: item has children dont add to row
             return !parentDragging && item !== before && item !== after;
         },
 

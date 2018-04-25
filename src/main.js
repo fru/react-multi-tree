@@ -23,9 +23,7 @@ class NodeInner extends Component {
 }))
 class Node extends Component {
 	render() {
-		let context = this.props; // TODO filter
 		let { list, index, isMultiNode, parentDragging, isDragging, options } = this.props;
-
 		let current = list[index];
 		
 		if (isMultiNode) {
@@ -34,13 +32,13 @@ class Node extends Component {
 
 		let groups = options.containsNormalized(current);
 		let row = startsMultiRow(current, options) 
-			? <NodeListMultiRow {...context} row={current} />
+			? <NodeListMultiRow {...this.props} row={current} />
 			: <NodeInner current={current} {...this.props} />;
 
 		return <div>
 			<div className={options.cx('node-anchor')}>{row}</div>
 			<div className={options.cx('list-container')}>
-				<NodeListChildGroups {...context} groups={groups} parentDragging={isDragging || parentDragging} />
+				<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
 			</div>
 		</div>;
 	}
@@ -58,7 +56,7 @@ function drop(props, monitor) {
 class Target extends Component {
 	render() {
 		let { parentDragging, options, isOver, item, list, index } = this.props;
-		let dragging = options.targetActive(item && item.item, parentDragging, list[index-1], list[index])
+		let dragging = item && options.targetActive(item.item, parentDragging, list[index-1], list[index]);
 
 		let target = <div className={options.cx('target', {dragging})}>
 			{dragging && isOver && <div className={options.cx('preview')}></div>}
