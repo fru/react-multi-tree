@@ -74,9 +74,8 @@ export class Tree extends Component {
 		this.defaults = defaultOptions(this); 
 	}
 	render() {
-		return <NodeList 
-			options={buildOptions(this.defaults, this.props, {Target, Node})} 
-			wrapper={props.options.cx('anyform-tree')} tree={this.props.nodes}
-			list={this.props.nodes} path={new props.options.Path()} />;
+		let options = buildOptions(this.defaults, this.props, {Target, Node});
+		return <NodeList options={options} wrapper={options.cx('anyform-tree')}
+			tree={this.props.nodes} list={this.props.nodes} path={new options.Path()} />;
 	}
 }
