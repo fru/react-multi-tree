@@ -26,12 +26,14 @@ export const buildDefaultOptions = ($tree) => {
         classes: {},
 
         // Id
+        
         propId: 'id',
         getId: function (node) {
             return node[this.propId];
         },
 
         // Selection
+
         selected: [],
         setSelected: function (selected) {
             this.selected = selected;
@@ -79,8 +81,20 @@ export const buildDefaultOptions = ($tree) => {
             options.onChange(tree);
         },
 
-        canDrop: function(tree, from, to, options) {
-            // Check from -> to and to -> from
+        canDrop: function (tree, from, to) {
+            
+        },
+
+        canDropMulti: function (tree, from, to, index) {
+            
+        },
+
+        canContainMulti: function () {
+            
+        },
+
+        transformContainMulti: function () {
+
         },
 
         // Groups of child components
@@ -98,6 +112,9 @@ export const buildDefaultOptions = ($tree) => {
             }
 			return false;
         },
+
+
+        // Dont create list, use callback, allways return list
         
         containsNormalized: function (node) {
 			let results = [];

@@ -1,15 +1,18 @@
+// Sometimes deeply connected with drag and drop
+
 export default function SelectionManager() {
  
     var cachedSelectionMap = null;
     var cachedSelected = null;
-    var cachedHandlers = [];
+    var cachedHandler = {};
     
     this.getNodeState = function(node, options) {
         let id = options.getId(node);
 
-        if (!cachedHandlers[id]) {
-            cachedHandlers[id] = (e) => {
-                this.select(e, id, options);
+        if (!cachedHandler[id]) {
+            cachedHandler[id] = {
+                up: (e) => this.up(e, id, options),
+                down: (e) => this.down(e, id, options), 
             }
         }
 
@@ -20,15 +23,24 @@ export default function SelectionManager() {
             }
             cachedSelected = options.selected;
         }
-        console.log(cachedSelectionMap[id]);
-        return { selected: cachedSelectionMap[id], handler: cachedHandlers[id] };
+        return { selected: cachedSelectionMap[id], ...cachedHandler[id] };
     };
 }
 
-SelectionManager.prototype.select = function (e, id, options) {
+SelectionManager.prototype.down = function (e, id, options) {
+    this.downPressedTime = Date.now();
+    this.downResetIfNotDrag = false;
+
     if (options.isSelectionMulti(e)) {
         options.setSelected([id].concat(options.selected || []));
+    } else if (options.selected  && options.selected.length === 1 && options.selected[0] === id) {
+        this.downResetIfNotDrag = true;
     } else {
         options.setSelected([id]);
     }
+};
+
+SelectionManager.prototype.up = function (e, id, options) {
+    var isDrag = Date.now() - this.downPressedTime > 500;
+    if (!isDrag && this.downResetIfNotDrag) options.setSelected([]);
 };

@@ -12,9 +12,9 @@ import { buildDefaultOptions } from './options';
 class NodeInner extends Component {
 	render() {
 		let { current, options, connectDragSource } = this.props;
-		let { selected, handler } = options.selectionManager.getNodeState(current, options);
+		let { selected, down, up } = options.selectionManager.getNodeState(current, options);
 
-		return connectDragSource(<div className={options.cx('node', {selected})} onClick={handler}>
+		return connectDragSource(<div className={options.cx('node', {selected})} onMouseDown={down} onMouseUp={up}>
 			{options.node(current)}
 		</div>);
 	}
@@ -62,6 +62,7 @@ class Target extends Component {
 	render() {
 		let { parentDragging, options, isOver, dragging, list, index } = this.props;
 
+		// TODO: make testable
 		let item = dragging && dragging.item;
 		if (parentDragging || item === list[index-1] || item === list[index]) {
 			dragging = false;
