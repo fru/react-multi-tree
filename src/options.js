@@ -31,11 +31,10 @@ export const defaultOptions = ($tree) => {
             item: list[index], 
             path: path.removeMultiWhenNotYetConverted(convertToMulti)
         }),
-        drop: function ({tree, path, options}, monitor) {
+        drop: function ({tree, path, options, convertToMulti}, monitor) {
             let item = monitor.getItem();
             let recalc = path.recalculateAfterDetach(item.path);
-            console.log(item.path.asArray());
-            options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item);
+            options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item, convertToMulti);
         },
         Path: Path,
         classes: {},
@@ -70,18 +69,24 @@ export const defaultOptions = ($tree) => {
             return JSON.parse(JSON.stringify(context));
         },
         
-        onDrop: function (tree, from, to, options, node) {
+        onDrop: function (tree, from, to, options, node, convertToMulti) {
             tree = options.clone(tree);
         
             var fromIndex = from.pop();
-            console.log(from);
             var fromParent = options.getPath(tree, from);
         
             fromParent.splice(fromIndex, 1);
-        
+
             var toIndex = to.pop();
             var toName = to.pop();
             var toParent = options.getPath(tree, to);
+
+            if (convertToMulti) {
+                toParent = options.transformToMultiRow(toParent);
+                var toReplaceIndex = to.pop();
+                var toReplaceParent = options.getPath(tree, to);
+                toReplaceParent[toReplaceIndex] = toParent; 
+            }
             
             if (typeof toName !== 'undefined') {
                 toParent[toName] = toParent[toName] || [];
@@ -120,8 +125,8 @@ export const defaultOptions = ($tree) => {
             return { list, path, convertToMulti };
         },
 
-        transformToMultiRow: function () {
-            // TODO implement
+        transformToMultiRow: function (node) {
+            return {[this.multiProp]: [node]};
         },
 
         // Groups of child components
