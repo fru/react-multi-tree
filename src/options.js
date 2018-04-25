@@ -126,6 +126,7 @@ export const defaultOptions = ($tree) => {
         },
 
         transformToMultiRow: function (node) {
+
             return {[this.multiProp]: [node]};
         },
 
@@ -146,11 +147,15 @@ export const defaultOptions = ($tree) => {
         },
 
         targetActive: function (item, parentDragging, before, after) {
-            // TODO: item has children dont add to row
-            return !parentDragging && item !== before && item !== after;
+            if (parentDragging || item === before || item === after) {
+                return false;
+            } else if (this.getNormalizedGroups(item).length) {
+                // Dont drop into multi
+            } else if (true) {
+                // TODO ensure multi and contains not on same node
+            }
+            return true;
         },
-
-        // Dont create list, use callback, allways return list
         
         getNormalizedGroups: function (node) {
 			let results = [];
