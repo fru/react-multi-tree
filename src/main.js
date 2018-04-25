@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragSource, DropTarget } from 'react-dnd';
-
-import classNames from 'classnames/bind';
-
 import { startsMultiRow, NodeListMultiRow, NodeListChildGroups, NodeListRoot } from './NodeList';
-import { buildDefaultOptions } from './options';
+import { buildOptions, defaultOptions } from './options';
 
 
 class NodeInner extends Component {
@@ -56,17 +53,12 @@ function drop(props, monitor) {
 @DropTarget('anyform-tree', {drop}, (connect, monitor) => ({
 	connectDropTarget: connect.dropTarget(),
 	isOver: monitor.isOver(),
-	dragging: monitor.getItem()
+	item: monitor.getItem()
 }))
 class Target extends Component {
 	render() {
-		let { parentDragging, options, isOver, dragging, list, index } = this.props;
-
-		// TODO: make testable
-		let item = dragging && dragging.item;
-		if (parentDragging || item === list[index-1] || item === list[index]) {
-			dragging = false;
-		}
+		let { parentDragging, options, isOver, item, list, index } = this.props;
+		let dragging = options.targetActive(item && item.item, parentDragging, list[index-1], list[index])
 
 		let target = <div className={options.cx('target', {dragging})}>
 			{dragging && isOver && <div className={options.cx('preview')}></div>}
@@ -78,16 +70,14 @@ class Target extends Component {
 	}
 }
 
-
 @DragDropContext(HTML5Backend)
 export class Tree extends Component {
 	constructor (props) {
 		super(props);
-		this.defaults = buildDefaultOptions(this); 
+		this.defaults = defaultOptions(this); 
 	}
 	render() {
-		let cx = classNames.bind(this.props.classes || this.defaults.classes);
-		let options = Object.assign(this.defaults, { Target, Node, cx }, this.props);
+		let options = buildOptions(this.defaults, this.props, {Target, Node});
 		return <NodeListRoot list={this.props.nodes} options={options} />
 	}
 }

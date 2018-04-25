@@ -1,8 +1,14 @@
 import React from 'react';
 import Path from './Path';
 import SelectionManager from './SelectionManager';
+import classNames from 'classnames/bind';
 
-export const buildDefaultOptions = ($tree) => {
+export const buildOptions = (defaults, props, components) => {
+    let cx = classNames.bind(props.classes || defaults.classes);
+    return Object.assign(defaults, components, { cx }, props);
+};
+
+export const defaultOptions = ($tree) => {
 
     return {
 
@@ -113,6 +119,10 @@ export const buildDefaultOptions = ($tree) => {
 			return false;
         },
 
+        targetActive: function (dragging, parentDragging, before, after) {
+            let item = dragging && dragging.item;
+            return !parentDragging && item !== before && item !== after;
+        },
 
         // Dont create list, use callback, allways return list
         
