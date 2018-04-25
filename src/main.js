@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragSource, DropTarget } from 'react-dnd';
-import { startsMultiRow, NodeListMultiRow, NodeListChildGroups, NodeListRoot } from './NodeList';
-import { buildOptions, defaultOptions } from './options';
+import { startsMultiRow, NodeList, NodeListChildGroups, NodeListRoot } from './NodeList';
+import { defaultOptions, buildOptions } from './options';
 
 
 class NodeInner extends Component {
@@ -30,13 +30,15 @@ class Node extends Component {
 			return <NodeInner current={current} {...this.props} />;
 		}
 
-		let groups = options.containsNormalized(current);
-		let row = startsMultiRow(current, options) 
-			? <NodeListMultiRow {...this.props} row={current} />
-			: <NodeInner current={current} {...this.props} />;
+		let groups = options.getNormalizedGroups(current);
+		let multi = options.getNormalizedMultiRow(current, this.props.path);
+		let multiNode = <NodeList {...this.props} isMultiNode={true}
+			list={multi.list} path={multi.path} wrapper={options.cx('node-multi-container')} />
 
 		return <div>
-			<div className={options.cx('node-anchor')}>{row}</div>
+			<div className={options.cx('node-anchor')}>
+				{multi ? multiNode : <NodeInner current={current} {...this.props} />}
+			</div>
 			<div className={options.cx('list-container')}>
 				<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
 			</div>
@@ -44,11 +46,7 @@ class Node extends Component {
 	}
 }
 
-function drop(props, monitor) {
-	props.options.onDropUnnormalized(props.tree, props.path, props.options, monitor.getItem());
-}
-
-@DropTarget('anyform-tree', {drop}, (connect, monitor) => ({
+@DropTarget('anyform-tree', {drop: (p, m) => p.options.onDropUnnormalized(p, m)}, (connect, monitor) => ({
 	connectDropTarget: connect.dropTarget(),
 	isOver: monitor.isOver(),
 	item: monitor.getItem()

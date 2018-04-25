@@ -28,6 +28,11 @@ export const defaultOptions = ($tree) => {
         // Helper
 
         beginDrag: ({ options, path, list, index }) => ({item: list[index], path}),
+        onDropUnnormalized: function ({tree, path, options}, monitor) {
+            let item = monitor.getItem();
+            let recalc = path.recalculateAfterDetach(item.path);
+            options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item);
+        },
         Path: Path,
         classes: {},
 
@@ -61,11 +66,6 @@ export const defaultOptions = ($tree) => {
             return JSON.parse(JSON.stringify(context));
         },
         
-        onDropUnnormalized: function (tree, path, options, item) {
-            var recalc = path.recalculateAfterDetach(item.path);
-            options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item);
-        },
-        
         onDrop: function (tree, from, to, options, node) {
             tree = options.clone(tree);
         
@@ -95,12 +95,27 @@ export const defaultOptions = ($tree) => {
             
         },
 
-        canContainMulti: function () {
-            
+        // Helper to decide if single or multi row is used
+
+        isMultiRow: function (node) {
+	        return node[this.multiProp] && node[this.multiProp].length;
+        },
+        
+        canBecomeMultiRow: function (node) {
+            return true;
         },
 
-        transformContainMulti: function () {
+        getNormalizedMultiRow: function (node, parentPath) {
+            if (!this.isMultiRow(node) && !this.canBecomeMultiRow(node)) return false;
+            
+            let list = node[this.multiProp] || [node];
+            let path = parentPath.add(this.multiProp);
 
+            return { list, path };
+        },
+
+        transformToMultiRow: function () {
+            // TODO implement
         },
 
         // Groups of child components
@@ -126,7 +141,7 @@ export const defaultOptions = ($tree) => {
 
         // Dont create list, use callback, allways return list
         
-        containsNormalized: function (node) {
+        getNormalizedGroups: function (node) {
 			let results = [];
 			for(var key in node) {
 				let id = this.containsId(key);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NodeList = ({ wrapper, path, ...context }) => {
+export const NodeList = ({ wrapper, path, ...context }) => {
 
 	let { Target, Node } = context.options;
 
@@ -14,29 +14,6 @@ const NodeList = ({ wrapper, path, ...context }) => {
 
 	return <div className={wrapper}>{content}</div>;
 }
-
-
-// Helper to decide if single or multi row is used
-
-export const startsMultiRow = (node, options) => {
-	let multiProp = options.multiProp;
-	return node[multiProp] && node[multiProp].length;
-}
-
-
-// Horrizontal collection of nodes in a single row
-
-export const NodeListMultiRow = ({ row, path, ...context }) => {
-
-	let multiProp = context.options.multiProp;
-	context.wrapper = context.options.cx('node-multi-container');
-
-	context.path = path.add(multiProp);
-	context.list = row[multiProp];
-
-	return <NodeList {...context} isMultiNode={true} />
-}
-
 
 // Children grouped by property, that may have a title
 
