@@ -32,7 +32,6 @@ Path.prototype.recalculateAfterDetach = function(detached) {
 
 Path.prototype.removeMultiWhenNotYetConverted = function(convertToMulti) {
     if (!convertToMulti) return this;
-    console.log(this.asArray());
     let path = this.asArray();
     return new Path(path.slice(0, path.length - 2));
 };

@@ -31,14 +31,17 @@ class Node extends Component {
 		}
 
 		let groups = options.getNormalizedGroups(current);
+		let multi = options.getNormalizedMultiRow(current, this.props.path);
 
-		let multiOptions = options.getNormalizedMultiRow(current, this.props.path);
-		let multi = <NodeList {...this.props} isMultiNode={true} {...multiOptions}
-			wrapper={options.cx('node-multi-container')} />
+		if (!groups.length && multi) {
+			return <div className={options.cx('node-anchor')}>
+				<NodeList {...this.props} isMultiNode={true} {...multi} wrapper={options.cx('node-multi-container')} />
+			</div>
+		}
 
 		return <div>
 			<div className={options.cx('node-anchor')}>
-				{multiOptions ? multi : <NodeInner current={current} {...this.props} />}
+				<NodeInner current={current} {...this.props} />
 			</div>
 			<div className={options.cx('list-container')}>
 				<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
