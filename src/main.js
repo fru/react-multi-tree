@@ -23,7 +23,7 @@ class NodeInner extends Component {
 }))
 class Node extends Component {
 	render() {
-		let { list, index, isMultiNode, parentDragging, isDragging, options, convertToMulti } = this.props;
+		let { list, index, isMultiNode, parentDragging, isDragging, options } = this.props;
 		let current = list[index];
 		
 		if (isMultiNode) {

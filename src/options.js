@@ -27,10 +27,14 @@ export const defaultOptions = ($tree) => {
 
         // Helper
 
-        beginDrag: ({ options, path, list, index }) => ({item: list[index], path}),
+        beginDrag: ({ options, path, list, index, convertToMulti }) => ({
+            item: list[index], 
+            path: path.removeMultiWhenNotYetConverted(convertToMulti)
+        }),
         drop: function ({tree, path, options}, monitor) {
             let item = monitor.getItem();
             let recalc = path.recalculateAfterDetach(item.path);
+            console.log(item.path.asArray());
             options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item);
         },
         Path: Path,
@@ -70,6 +74,7 @@ export const defaultOptions = ($tree) => {
             tree = options.clone(tree);
         
             var fromIndex = from.pop();
+            console.log(from);
             var fromParent = options.getPath(tree, from);
         
             fromParent.splice(fromIndex, 1);

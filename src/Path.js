@@ -11,16 +11,16 @@ Path.prototype._differentPrefix = function(prefix, lengthChecked) {
     for(var i = 0; i < lengthChecked; i++) {
         if (path[i] !== prefix[i]) return true;
     }
-}
+};
 
 Path.prototype.add = function(segment) {
     return new Path(this.asArray().concat(Array.isArray(segment) ? segment: [segment]));
-}
+};
 
 Path.prototype.clone = function(transform) {
     transform = transform || (x => x);
     return new Path(transform(this.asArray()));
-}
+};
 
 Path.prototype.recalculateAfterDetach = function(detached) {
     if (detached.asArray) detached = detached.asArray();
@@ -28,4 +28,11 @@ Path.prototype.recalculateAfterDetach = function(detached) {
     if (this._differentPrefix(detached, index)) return this;
     if (path[index] < detached[index]) return this;
     return this.clone(path => { path[index]--; return path; });
-}
+};
+
+Path.prototype.removeMultiWhenNotYetConverted = function(convertToMulti) {
+    if (!convertToMulti) return this;
+    console.log(this.asArray());
+    let path = this.asArray();
+    return new Path(path.slice(0, path.length - 2));
+};
