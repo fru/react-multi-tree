@@ -13,7 +13,7 @@ export const NodeList = ({ wrapper, path, ...context }) => {
 	}
 
 	return <div className={wrapper}>{content}</div>;
-}
+};
 
 // Children grouped by property, that may have a title
 
@@ -26,10 +26,4 @@ export const NodeListChildGroups = ({ groups, path, ...context }) => groups.map(
 		wrapper={context.options.cx('list-container-inner')} />
 
 	return <div key={group.id}>{title}{list}</div>
-})
-
-
-// Initial simple root list
-
-export const NodeListRoot = (props) => <NodeList {...props} path={new props.options.Path()} 
-	tree={props.list} wrapper={props.options.cx('anyform-tree')} />;
+});

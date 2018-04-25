@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragSource, DropTarget } from 'react-dnd';
-import { startsMultiRow, NodeList, NodeListChildGroups, NodeListRoot } from './NodeList';
+import { NodeList, NodeListChildGroups } from './NodeList';
 import { defaultOptions, buildOptions } from './options';
 
 
@@ -74,7 +74,9 @@ export class Tree extends Component {
 		this.defaults = defaultOptions(this); 
 	}
 	render() {
-		let options = buildOptions(this.defaults, this.props, {Target, Node});
-		return <NodeListRoot list={this.props.nodes} options={options} />
+		return <NodeList 
+			options={buildOptions(this.defaults, this.props, {Target, Node})} 
+			wrapper={props.options.cx('anyform-tree')} tree={this.props.nodes}
+			list={this.props.nodes} path={new props.options.Path()} />;
 	}
 }
