@@ -28,7 +28,7 @@ export const defaultOptions = ($tree) => {
         // Helper
 
         beginDrag: ({ options, path, list, index }) => ({item: list[index], path}),
-        onDropUnnormalized: function ({tree, path, options}, monitor) {
+        drop: function ({tree, path, options}, monitor) {
             let item = monitor.getItem();
             let recalc = path.recalculateAfterDetach(item.path);
             options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item);
@@ -106,12 +106,13 @@ export const defaultOptions = ($tree) => {
         },
 
         getNormalizedMultiRow: function (node, parentPath) {
-            if (!this.isMultiRow(node) && !this.canBecomeMultiRow(node)) return false;
+            let convertToMulti = !this.isMultiRow(node); 
+            if (convertToMulti && !this.canBecomeMultiRow(node)) return false;
             
             let list = node[this.multiProp] || [node];
             let path = parentPath.add(this.multiProp);
 
-            return { list, path };
+            return { list, path, convertToMulti };
         },
 
         transformToMultiRow: function () {

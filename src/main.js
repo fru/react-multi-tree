@@ -23,7 +23,7 @@ class NodeInner extends Component {
 }))
 class Node extends Component {
 	render() {
-		let { list, index, isMultiNode, parentDragging, isDragging, options } = this.props;
+		let { list, index, isMultiNode, parentDragging, isDragging, options, convertToMulti } = this.props;
 		let current = list[index];
 		
 		if (isMultiNode) {
@@ -31,13 +31,14 @@ class Node extends Component {
 		}
 
 		let groups = options.getNormalizedGroups(current);
-		let multi = options.getNormalizedMultiRow(current, this.props.path);
-		let multiNode = <NodeList {...this.props} isMultiNode={true}
-			list={multi.list} path={multi.path} wrapper={options.cx('node-multi-container')} />
+
+		let multiOptions = options.getNormalizedMultiRow(current, this.props.path);
+		let multi = <NodeList {...this.props} isMultiNode={true} {...multiOptions}
+			wrapper={options.cx('node-multi-container')} />
 
 		return <div>
 			<div className={options.cx('node-anchor')}>
-				{multi ? multiNode : <NodeInner current={current} {...this.props} />}
+				{multiOptions ? multi : <NodeInner current={current} {...this.props} />}
 			</div>
 			<div className={options.cx('list-container')}>
 				<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
@@ -46,7 +47,7 @@ class Node extends Component {
 	}
 }
 
-@DropTarget('anyform-tree', {drop: (p, m) => p.options.onDropUnnormalized(p, m)}, (connect, monitor) => ({
+@DropTarget('anyform-tree', {drop: (p, m) => p.options.drop(p, m)}, (connect, monitor) => ({
 	connectDropTarget: connect.dropTarget(),
 	isOver: monitor.isOver(),
 	item: monitor.getItem()
