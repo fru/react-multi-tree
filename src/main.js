@@ -33,19 +33,24 @@ class Node extends Component {
 		let { groups, hasChildren } = options.getNormalizedChildGroups(current);
 		let multi = options.getNormalizedMultiRow(current, this.props.path);
 
+		let children = <div className={options.cx('list-container')}>
+			<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
+		</div>;
+
 		if (!hasChildren && multi) {
-			return <div className={options.cx('node-anchor')}>
-				<NodeList {...this.props} isMultiNode={true} {...multi} wrapper={options.cx('node-multi-container')} />
-			</div>
+			return <div>
+				<div className={options.cx('node-anchor')}>
+					<NodeList {...this.props} isMultiNode={true} {...multi} wrapper={options.cx('node-multi-container')} />
+				</div>
+				{multi.list.length === 1 && children}
+			</div>;
 		}
 
 		return <div>
 			<div className={options.cx('node-anchor')}>
 				<NodeInner current={current} {...this.props} />
 			</div>
-			<div className={options.cx('list-container')}>
-				<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
-			</div>
+			{children}
 		</div>;
 	}
 }

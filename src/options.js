@@ -60,15 +60,16 @@ export const defaultOptions = ($tree) => {
         // Outsource: Normalize Manager
 
         getNormalizedChildGroups: function (node) {
-			let groups = [];
+            let groups = [];
+            let hasChildren = false;
+
 			for(var prop in node) {
                 let title = this._getChildGroupTitle(prop) || '';
                 if (prop === this.propContains || title) {
                     groups.push({ title, prop, list: node[prop] });
+                    if (node[prop].length) hasChildren = true;
                 }
             }
-
-            let hasChildren = !!groups.length;
 
             if (!hasChildren) {
                 groups = [{prop: this.propContains, list: []}];
@@ -146,6 +147,8 @@ export const defaultOptions = ($tree) => {
             var fromIndex = from.pop();
             var fromParent = options._getPath(tree, from);
         
+            // is fromParent single multi -> tranformBackToNormalRow 
+
             fromParent.splice(fromIndex, 1);
 
             var toIndex = to.pop();
