@@ -4,7 +4,7 @@ import SelectionManager from './SelectionManager';
 import classNames from 'classnames/bind';
 
 export const buildOptions = (defaults, props, components) => {
-    let cx = classNames.bind(props.classes || defaults.classes);
+    let cx = classNames.bind(props.classes || {});
     return Object.assign(defaults, components, { cx }, props);
 };
 
@@ -25,7 +25,7 @@ export const defaultOptions = ($tree) => {
 			</div>;
 		},
 
-        // Helper
+        // 
 
         beginDrag: ({ options, path, list, index, convertToMulti }) => ({
             item: list[index], 
@@ -37,7 +37,6 @@ export const defaultOptions = ($tree) => {
             options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item, convertToMulti);
         },
         Path: Path,
-        classes: {},
 
         // Id
         
@@ -145,13 +144,11 @@ export const defaultOptions = ($tree) => {
 			return false;
         },
 
-        targetActive: function (item, parentDragging, before, after) {
+        targetActive: function (item, parentDragging, before, after, isMultiNode) {
             if (parentDragging || item === before || item === after) {
                 return false;
-            } else if (this.getNormalizedGroups(item).length) {
-                // Dont drop into multi
-            } else if (true) {
-                // TODO ensure multi and contains not on same node
+            } else if (isMultiNode && this.getNormalizedGroups(item).hasChildren) {
+                return false;
             }
             return true;
         },

@@ -57,8 +57,8 @@ class Node extends Component {
 }))
 class Target extends Component {
 	render() {
-		let { parentDragging, options, isOver, item, list, index } = this.props;
-		let dragging = item && options.targetActive(item.item, parentDragging, list[index-1], list[index]);
+		let { parentDragging, options, isOver, item, list, index, isMultiNode } = this.props;
+		let dragging = item && options.targetActive(item.item, parentDragging, list[index-1], list[index], isMultiNode);
 
 		let target = <div className={options.cx('target', {dragging})}>
 			{dragging && isOver && <div className={options.cx('preview')}></div>}
