@@ -31,7 +31,7 @@ SelectionManager.prototype.down = function (e, id, options) {
     this.downPressedTime = Date.now();
     this.downResetIfNotDrag = false;
 
-    if (options.isSelectionMulti(e)) {
+    if (options.wasMultipleSelected(e)) {
         options.setSelected([id].concat(options.selected || []));
     } else if (options.selected  && options.selected.length === 1 && options.selected[0] === id) {
         this.downResetIfNotDrag = true;

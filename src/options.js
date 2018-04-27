@@ -3,10 +3,6 @@ import Path from './Path';
 import SelectionManager from './SelectionManager';
 import classNames from 'classnames/bind';
 
-export const buildOptions = (defaults, props, components) => {
-    let cx = classNames.bind(props.classes || {});
-    return Object.assign(defaults, components, { cx }, props);
-};
 
 export const defaultOptions = ($tree) => {
 
@@ -16,16 +12,41 @@ export const defaultOptions = ($tree) => {
 
         containsProp: 'contains',
         multiProp: 'multi',
-        onChange: (modified) => {},
+        idProp: 'id',
+
+        onChange: function (modified) {},
         
         node: function (node) {
 			return <div> 
 				<span className={this.cx('handler')}>::</span>
 				{node.title}
 			</div>;
-		},
+        },
+        
+        // Selection
 
-        // 
+        selected: [],
+        selectedAllowMultiple: false,
+
+        setSelected: function (selected) {
+            this.selected = selected;
+            $tree.setState({});
+        },
+
+        // Helper
+
+        selectionManager: new SelectionManager(),
+
+        getId: function (node) {
+            return node[this.idProp];
+        },
+
+        wasMultipleSelected: function(event) { 
+            return this.selectedAllowMultiple && event.shiftKey;  
+        },
+
+
+        // Outsource: DragManager
 
         beginDrag: ({ options, path, list, index, convertToMulti }) => ({
             item: list[index], 
@@ -36,26 +57,10 @@ export const defaultOptions = ($tree) => {
             let recalc = path.recalculateAfterDetach(item.path);
             options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item, convertToMulti);
         },
+
+        // Outsource: TransformManager
+
         Path: Path,
-
-        // Id
-        
-        propId: 'id',
-        getId: function (node) {
-            return node[this.propId];
-        },
-
-        // Selection
-
-        selected: [],
-        setSelected: function (selected) {
-            this.selected = selected;
-            $tree.setState({});
-        },
-        isSelectionMulti: (e) => e.shiftKey,
-        selectionManager: new SelectionManager(),
-
-        // Modify tree
 
         getPath: function (context, path) {
             for (var i = 0; i < path.length; i++) {
@@ -169,4 +174,9 @@ export const defaultOptions = ($tree) => {
         	return {groups, hasChildren};
         }
     };
-}
+};
+
+export const buildOptions = (defaults, props, components) => {
+    let cx = classNames.bind(props.classes || {});
+    return Object.assign(defaults, components, { cx }, props);
+};
