@@ -61,6 +61,13 @@ export const defaultOptions = ($tree) => {
 	        return node[this.propMulti] && node[this.propMulti].length;
         },
 
+        getChildGroupTitle: function (prop) {
+            let prefix = this.propContains + '-'
+			if (prop.indexOf(prefix) === 0) {
+				return prop.substring(prefix.length);
+            }
+        },
+
         wasMultipleSelected: function(event) { 
             return this.selectedAllowMultiple && event.shiftKey;  
         },
@@ -134,32 +141,19 @@ export const defaultOptions = ($tree) => {
 
         // Outsource: Normalize Manager
 
-		containsGroupTitle: (id) => {
-			return id.replace(/-/g, '\s');
-        },
-        
-		containsId: function (key) {
-            if (key === this.propContains) return '';
-
-            let prefix = this.propContains + '-'
-			if (key.indexOf(prefix) === 0) {
-				return key.substring(prefix.length);
-            }
-			return false;
-        },
-
         getNormalizedChildGroups: function (node) {
-			let groups = [], hasChildren = true;
-			for(var key in node) {
-				let id = this.containsId(key);
-				if (id !== false) groups.push({
-                    id, path: key, value: node[key] || [], 
-                    title: this.containsGroupTitle(id)
-				})
+			let groups = [];
+			for(var prop in node) {
+                let title = this.getChildGroupTitle(prop) || '';
+                if (prop === this.propContains || title) {
+                    groups.push({ title, prop, list: node[prop] });
+                }
             }
-            if (!groups.length) {
-                groups = [{id: '', path: this.propContains, value: []}]
-                hasChildren = false;
+
+            let hasChildren = !!groups.length;
+
+            if (!hasChildren) {
+                groups = [{prop: this.propContains, list: []}];
             }
         	return {groups, hasChildren};
         },

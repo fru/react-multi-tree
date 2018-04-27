@@ -22,8 +22,8 @@ export const NodeListChildGroups = ({ groups, path, ...context }) => groups.map(
 	let titleClass = context.options.cx('group-container');
 	let title = group.title && <div className={titleClass}>{group.title}</div>
 	let list = <NodeList {...context} 
-		path={path.add(group.path)} isMultiNode={false} list={group.value}
+		path={path.add(group.prop)} isMultiNode={false} list={group.list}
 		wrapper={context.options.cx('list-container-inner')} />
 
-	return <div key={group.id}>{title}{list}</div>
+	return <div key={group.prop}>{title}{list}</div>
 });
