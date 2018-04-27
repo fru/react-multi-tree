@@ -30,7 +30,7 @@ class Node extends Component {
 			return <NodeInner current={current} {...this.props} />;
 		}
 
-		let { groups, hasChildren } = options.getNormalizedGroups(current);
+		let { groups, hasChildren } = options.getNormalizedChildGroups(current);
 		let multi = options.getNormalizedMultiRow(current, this.props.path);
 
 		if (!hasChildren && multi) {

@@ -10,18 +10,20 @@ export const defaultOptions = ($tree) => {
 
         // Defaults
 
-        containsProp: 'contains',
-        multiProp: 'multi',
-        idProp: 'id',
+        propId: 'id',
+        propContains: 'contains',
+        propMulti: 'multi',
 
-        onChange: function (modified) {},
-        
         node: function (node) {
 			return <div> 
 				<span className={this.cx('handler')}>::</span>
 				{node.title}
 			</div>;
         },
+
+        // Tran
+
+        onChange: function (modified) {},
         
         // Selection
 
@@ -33,18 +35,35 @@ export const defaultOptions = ($tree) => {
             $tree.setState({});
         },
 
+        // Behaviour
+
+        canDrop: function (tree, from, to) {
+            
+        },
+
+        canDropMulti: function (tree, from, to, index) {
+            
+        },
+
+        canBecomeMultiRow: function (node) {
+            return true;
+        },
+
         // Helper
 
         selectionManager: new SelectionManager(),
 
         getId: function (node) {
-            return node[this.idProp];
+            return node[this.propId];
+        },
+
+        isMultiRow: function (node) {
+	        return node[this.propMulti] && node[this.propMulti].length;
         },
 
         wasMultipleSelected: function(event) { 
             return this.selectedAllowMultiple && event.shiftKey;  
         },
-
 
         // Outsource: DragManager
 
@@ -57,38 +76,50 @@ export const defaultOptions = ($tree) => {
             let recalc = path.recalculateAfterDetach(item.path);
             options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item, convertToMulti);
         },
+        targetActive: function (item, parentDragging, before, after, isMultiNode) {
+            if (parentDragging || item === before || item === after) {
+                return false;
+            } else if (isMultiNode && this.getNormalizedChildGroups(item).hasChildren) {
+                return false;
+            }
+            return true;
+        },
 
         // Outsource: TransformManager
 
         Path: Path,
 
-        getPath: function (context, path) {
+        _getPath: function (context, path) {
             for (var i = 0; i < path.length; i++) {
                 context = context[path[i]];
             }
             return context;
         },
 
-        clone: function (context) {
+        _clone: function (context) {
             return JSON.parse(JSON.stringify(context));
+        },
+
+        _transformToMultiRow: function (node) {
+            return {[this.propMulti]: [node]};
         },
         
         onDrop: function (tree, from, to, options, node, convertToMulti) {
-            tree = options.clone(tree);
+            tree = options._clone(tree);
         
             var fromIndex = from.pop();
-            var fromParent = options.getPath(tree, from);
+            var fromParent = options._getPath(tree, from);
         
             fromParent.splice(fromIndex, 1);
 
             var toIndex = to.pop();
             var toName = to.pop();
-            var toParent = options.getPath(tree, to);
+            var toParent = options._getPath(tree, to);
 
             if (convertToMulti) {
-                toParent = options.transformToMultiRow(toParent);
+                toParent = options._transformToMultiRow(toParent);
                 var toReplaceIndex = to.pop();
-                var toReplaceParent = options.getPath(tree, to);
+                var toReplaceParent = options._getPath(tree, to);
                 toReplaceParent[toReplaceIndex] = toParent; 
             }
             
@@ -101,64 +132,23 @@ export const defaultOptions = ($tree) => {
             options.onChange(tree);
         },
 
-        canDrop: function (tree, from, to) {
-            
-        },
-
-        canDropMulti: function (tree, from, to, index) {
-            
-        },
-
-        // Helper to decide if single or multi row is used
-
-        isMultiRow: function (node) {
-	        return node[this.multiProp] && node[this.multiProp].length;
-        },
-        
-        canBecomeMultiRow: function (node) {
-            return true;
-        },
-
-        getNormalizedMultiRow: function (node, parentPath) {
-            let convertToMulti = !this.isMultiRow(node); 
-            if (convertToMulti && !this.canBecomeMultiRow(node)) return false;
-            
-            let list = node[this.multiProp] || [node];
-            let path = parentPath.add(this.multiProp);
-
-            return { list, path, convertToMulti };
-        },
-
-        transformToMultiRow: function (node) {
-            return {[this.multiProp]: [node]};
-        },
-
-        // Groups of child components
+        // Outsource: Normalize Manager
 
 		containsGroupTitle: (id) => {
 			return id.replace(/-/g, '\s');
         },
         
 		containsId: function (key) {
-            if (key === this.containsProp) return '';
+            if (key === this.propContains) return '';
 
-            let prefix = this.containsProp + '-'
+            let prefix = this.propContains + '-'
 			if (key.indexOf(prefix) === 0) {
 				return key.substring(prefix.length);
             }
 			return false;
         },
 
-        targetActive: function (item, parentDragging, before, after, isMultiNode) {
-            if (parentDragging || item === before || item === after) {
-                return false;
-            } else if (isMultiNode && this.getNormalizedGroups(item).hasChildren) {
-                return false;
-            }
-            return true;
-        },
-        
-        getNormalizedGroups: function (node) {
+        getNormalizedChildGroups: function (node) {
 			let groups = [], hasChildren = true;
 			for(var key in node) {
 				let id = this.containsId(key);
@@ -168,10 +158,20 @@ export const defaultOptions = ($tree) => {
 				})
             }
             if (!groups.length) {
-                groups = [{id: '', path: this.containsProp, value: []}]
+                groups = [{id: '', path: this.propContains, value: []}]
                 hasChildren = false;
             }
         	return {groups, hasChildren};
+        },
+
+        getNormalizedMultiRow: function (node, parentPath) {
+            let convertToMulti = !this.isMultiRow(node); 
+            if (convertToMulti && !this.canBecomeMultiRow(node)) return false;
+            
+            let list = node[this.propMulti] || [node];
+            let path = parentPath.add(this.propMulti);
+
+            return { list, path, convertToMulti };
         }
     };
 };
