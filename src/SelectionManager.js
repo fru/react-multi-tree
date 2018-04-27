@@ -1,5 +1,3 @@
-// Sometimes deeply connected with drag and drop
-
 export default function SelectionManager() {
  
     var cachedSelectionMap = null;
@@ -27,11 +25,15 @@ export default function SelectionManager() {
     };
 }
 
+SelectionManager.prototype.extendExistingSelection = function (e, options) { 
+    return options.selectedAllowMultiple && e.shiftKey;  
+};
+
 SelectionManager.prototype.down = function (e, id, options) {
     this.downPressedTime = Date.now();
     this.downResetIfNotDrag = false;
 
-    if (options.wasMultipleSelected(e)) {
+    if (this.extendExistingSelection(e, options)) {
         options.setSelected([id].concat(options.selected || []));
     } else if (options.selected  && options.selected.length === 1 && options.selected[0] === id) {
         this.downResetIfNotDrag = true;

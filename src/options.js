@@ -21,7 +21,7 @@ export const defaultOptions = ($tree) => {
 			</div>;
         },
 
-        // Tran
+        // Transform
 
         onChange: function (modified) {},
         
@@ -50,8 +50,41 @@ export const defaultOptions = ($tree) => {
         },
 
         // Helper
+        
+        getChildGroupName: (n) => n,
 
         selectionManager: new SelectionManager(),
+
+
+
+        // Outsource: Normalize Manager
+
+        getNormalizedChildGroups: function (node) {
+			let groups = [];
+			for(var prop in node) {
+                let title = this._getChildGroupTitle(prop) || '';
+                if (prop === this.propContains || title) {
+                    groups.push({ title, prop, list: node[prop] });
+                }
+            }
+
+            let hasChildren = !!groups.length;
+
+            if (!hasChildren) {
+                groups = [{prop: this.propContains, list: []}];
+            }
+        	return {groups, hasChildren};
+        },
+
+        getNormalizedMultiRow: function (node, parentPath) {
+            let convertToMulti = !this.isMultiRow(node); 
+            if (convertToMulti && !this.canBecomeMultiRow(node)) return false;
+            
+            let list = node[this.propMulti] || [node];
+            let path = parentPath.add(this.propMulti);
+
+            return { list, path, convertToMulti };
+        },
 
         getId: function (node) {
             return node[this.propId];
@@ -61,15 +94,11 @@ export const defaultOptions = ($tree) => {
 	        return node[this.propMulti] && node[this.propMulti].length;
         },
 
-        getChildGroupTitle: function (prop) {
+        _getChildGroupTitle: function (prop) {
             let prefix = this.propContains + '-'
-			if (prop.indexOf(prefix) === 0) {
-				return prop.substring(prefix.length);
+			if (this.getChildGroupName && prop.indexOf(prefix) === 0) {
+				return this.getChildGroupName(prop.substring(prefix.length), prefix);
             }
-        },
-
-        wasMultipleSelected: function(event) { 
-            return this.selectedAllowMultiple && event.shiftKey;  
         },
 
         // Outsource: DragManager
@@ -137,35 +166,6 @@ export const defaultOptions = ($tree) => {
             toParent.splice(toIndex, 0, node);
         
             options.onChange(tree);
-        },
-
-        // Outsource: Normalize Manager
-
-        getNormalizedChildGroups: function (node) {
-			let groups = [];
-			for(var prop in node) {
-                let title = this.getChildGroupTitle(prop) || '';
-                if (prop === this.propContains || title) {
-                    groups.push({ title, prop, list: node[prop] });
-                }
-            }
-
-            let hasChildren = !!groups.length;
-
-            if (!hasChildren) {
-                groups = [{prop: this.propContains, list: []}];
-            }
-        	return {groups, hasChildren};
-        },
-
-        getNormalizedMultiRow: function (node, parentPath) {
-            let convertToMulti = !this.isMultiRow(node); 
-            if (convertToMulti && !this.canBecomeMultiRow(node)) return false;
-            
-            let list = node[this.propMulti] || [node];
-            let path = parentPath.add(this.propMulti);
-
-            return { list, path, convertToMulti };
         }
     };
 };
