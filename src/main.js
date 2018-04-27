@@ -30,10 +30,10 @@ class Node extends Component {
 			return <NodeInner current={current} {...this.props} />;
 		}
 
-		let groups = options.getNormalizedGroups(current);
+		let { groups, hasChildren } = options.getNormalizedGroups(current);
 		let multi = options.getNormalizedMultiRow(current, this.props.path);
 
-		if (!groups.length && multi) {
+		if (!hasChildren && multi) {
 			return <div className={options.cx('node-anchor')}>
 				<NodeList {...this.props} isMultiNode={true} {...multi} wrapper={options.cx('node-multi-container')} />
 			</div>

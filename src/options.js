@@ -126,7 +126,6 @@ export const defaultOptions = ($tree) => {
         },
 
         transformToMultiRow: function (node) {
-
             return {[this.multiProp]: [node]};
         },
 
@@ -158,15 +157,19 @@ export const defaultOptions = ($tree) => {
         },
         
         getNormalizedGroups: function (node) {
-			let results = [];
+			let groups = [], hasChildren = true;
 			for(var key in node) {
 				let id = this.containsId(key);
-				if (id !== false) results.push({
+				if (id !== false) groups.push({
                     id, path: key, value: node[key] || [], 
                     title: this.containsGroupTitle(id)
 				})
-			}
-        	return results;
+            }
+            if (!groups.length) {
+                groups = [{id: '', path: this.containsProp, value: []}]
+                hasChildren = false;
+            }
+        	return {groups, hasChildren};
         }
     };
 }
