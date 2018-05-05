@@ -140,16 +140,26 @@ export const defaultOptions = ($tree) => {
         _transformToMultiRow: function (node) {
             return {[this.propMulti]: [node]};
         },
+
+        _normalizeMultiRow: function (tree, from, fromParent) {
+            var type = from.pop();
+            if (fromParent.length === 1 && type === this.propMulti) {
+                var index = from.pop();
+                var target = this._getPath(tree, from);
+                target[index] = fromParent[0];
+            }
+        },
+
+        // TODO use this instead of options parameter?
         
         onDrop: function (tree, from, to, options, node, convertToMulti) {
             tree = options._clone(tree);
         
             var fromIndex = from.pop();
             var fromParent = options._getPath(tree, from);
-        
-            // is fromParent single multi -> tranformBackToNormalRow 
 
             fromParent.splice(fromIndex, 1);
+            options._normalizeMultiRow(tree, from.slice(), fromParent);
 
             var toIndex = to.pop();
             var toName = to.pop();
