@@ -113,10 +113,10 @@ export const defaultOptions = ($tree) => {
             let recalc = path.recalculateAfterDetach(item.path);
             options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item, convertToMulti);
         },
-        targetActive: function (item, parentDragging, before, after, isMultiNode) {
+        targetActive: function (item, parentDragging, before, after, isMultiTarget) {
             if (parentDragging || item === before || item === after) {
                 return false;
-            } else if (isMultiNode && this.getNormalizedChildGroups(item).hasChildren) {
+            } else if (isMultiTarget && this.getNormalizedChildGroups(item).hasChildren) {
                 return false;
             }
             return true;
