@@ -34,11 +34,11 @@ const NodeListChildGroups = ({ groups, path, ...context }) => groups.map((group)
 
 class NodeInner extends Component {
 	render() {
-		let { current, options, connectDragSource } = this.props;
-		let { selected, down, up } = options.selectionManager.getNodeState(current, options);
+		let { list, index, options, connectDragSource } = this.props;
+		let { selected, down, up } = options.selectionManager.getNodeState(list[index], options);
 
 		return connectDragSource(<div className={options.cx('node', {selected})} onMouseDown={down} onMouseUp={up}>
-			{options.node(current)}
+			{options.node(list[index])}
 		</div>);
 	}
 }
@@ -50,14 +50,11 @@ class NodeInner extends Component {
 class Node extends Component {
 	render() {
 		let { list, index, isMultiNode, parentDragging, isDragging, options } = this.props;
-		let current = list[index];
 		
-		if (isMultiNode) {
-			return <NodeInner current={current} {...this.props} />;
-		}
+		if (isMultiNode) return <NodeInner {...this.props} />;
 
-		let { groups, hasChildren } = options.getNormalizedChildGroups(current);
-		let multi = options.getNormalizedMultiRow(current, this.props.path);
+		let { groups, hasChildren } = options.getNormalizedChildGroups(list[index]);
+		let multi = options.getNormalizedMultiRow(list[index], this.props.path);
 
 		let children = <div className={options.cx('list-container')}>
 			<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
@@ -77,7 +74,7 @@ class Node extends Component {
 
 		return <div>
 			<div className={options.cx('node-anchor')}>
-				<NodeInner current={current} {...this.props} />
+				<NodeInner {...this.props} />
 			</div>
 			{children}
 		</div>;
