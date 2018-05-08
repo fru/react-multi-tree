@@ -1,6 +1,7 @@
 import React from 'react';
 import Path from './Path';
 import SelectionManager from './SelectionManager';
+import NormalizationHelper from './NormalizationHelper';
 import classNames from 'classnames/bind';
 
 
@@ -37,105 +38,22 @@ export const defaultOptions = ($tree) => {
 
         // Helper
         
-        getChildGroupName: (property) => property,
+        getChildGroupTitle: (property) => property,
 
         selectionManager: new SelectionManager(),
+        normalizationHelper: new NormalizationHelper(),
 
         // Behaviour
 
         // TODO allow non function constants and iterate over nodes
 
-        allowChildren: function (parent, path, children) {
-            return true;
-        },
-
-        allowMultiRow: function (nodes, path) {
-            return true;
-        },
+        allowChildren: (parent, path, children, key) => true,
+        allowMultiRow: (nodes, path) => true,
 
         // Check on hover if these node combinations are valid  
 
-        validateChildrenDrop: function (parent, path, children) {
-            return true;
-        },
-
-        validateMultiRowDrop: function (nodes, path) {
-            return true;
-        },
-        
-        // Outsource: Normalize Manager
-
-        getNormalizedChildGroups: function (node, parentPath) {
-            let groups = [];
-            let hasChildren = false;
-
-			for(var prop in node) {
-                let title = this._getChildGroupTitle(prop) || '';
-                if (prop === this.propContains || title) {
-                    let path = parentPath.add(prop);
-                    groups.push({ title, prop, path, list: node[prop] });
-                    if (node[prop].length) hasChildren = true;
-                }
-            }
-            
-            if (!hasChildren) {
-                groups = [{prop: this.propContains, list: []}];
-            }
-        	return {groups, hasChildren};
-        },
-
-        getNormalizedMultiRow: function (node, parentPath) {
-            let convertToMulti = !this.isMultiRow(node); 
-            if (convertToMulti && !this.allowMultipleInRow(node)) return false;
-            
-            let list = node[this.propMulti] || [node];
-            let path = parentPath.add(this.propMulti);
-
-            return { list, path, convertToMulti };
-        },
-
-        getId: function (node) {
-            return node[this.propId];
-        },
-
-        isMultiRow: function (node) {
-	        return node[this.propMulti] && node[this.propMulti].length;
-        },
-
-
-
-        allowChildren: function (node, path) {
-            return true;
-        },
-
-        allowMultipleInRow: function (node, path) {
-            return true;
-        },
-
-
-
-
-
-        getChildren: function (node, path) {
-            
-
-            
-            
-            if (this.allowChildren(node, path)) {
-                
-            } else {
-
-            }
-
-            return { keys, count };
-        },
-
-        _getChildGroupTitle: function (prop) {
-            let prefix = this.propContains + '-'
-			if (this.getChildGroupName && prop.indexOf(prefix) === 0) {
-				return this.getChildGroupName(prop.substring(prefix.length), prefix);
-            }
-        },
+        validateChildrenDrop: (parent, path, children, key) => true,
+        validateMultiRowDrop: (nodes, path) => true,
 
         // Outsource: DragManager
 
@@ -151,7 +69,7 @@ export const defaultOptions = ($tree) => {
         targetActive: function (item, parentDragging, before, after, isMultiNode) {
             if (parentDragging || item === before || item === after) {
                 return false;
-            } else if (isMultiNode && this.getChildren(item).count) {
+            } else if (isMultiNode && this.normalizationHelper.getChildren(item).hasChildren) {
                 return false;
             }
             return true;
@@ -224,5 +142,6 @@ export const getContext = (defaults, props, components, root) => {
     // TODO include setSelected and cache as state
     let context = Object.assign(defaults, components, { cx }, props);
     context.root = root;
+    context.normalizationHelper.options = context;
     return context;
 };

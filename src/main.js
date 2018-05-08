@@ -11,7 +11,7 @@ const NodeList = ({ path, ...context }) => {
 	let content = [<Target {...context} index={0} path={path.add(0)} key={0} />];
 
 	for (var i = 0; i < context.list.length; i++) {
-		let key = context.options.getId(context.list[i]);
+		let key = context.options.normalizationHelper.getId(context.list[i]);
 		content.push(<Node   {...context} index={i}   path={path.add(i)}   key={'node_' + key} />);
 		content.push(<Target {...context} index={i+1} path={path.add(i+1)} key={i+1} />);
 	}
@@ -31,16 +31,15 @@ const NodeListChildGroups = ({ groups, path, ...context }) => groups.map((group)
 	return <div key={group.prop}>{title}{list}</div>
 });
 
-class NodeInner extends Component {
-	render() {
-		let { list, index, options, connect } = this.props;
-		let { selected, down, up } = options.selectionManager.getNodeState(list[index], options);
+// Inner node container with event bindings
 
-		return connect(<div className={options.cx('node', {selected})} onMouseDown={down} onMouseUp={up}>
-			{options.node(list[index])}
-		</div>);
-	}
-}
+const NodeInner = ({ list, index, options, connect }) => {
+	let { selected, down, up } = options.selectionManager.getNodeState(list[index], options);
+
+	return connect(<div className={options.cx('node', {selected})} onMouseDown={down} onMouseUp={up}>
+		{options.node(list[index])}
+	</div>);
+};
 
 @DragSource('anyform-tree', {beginDrag: (p) => p.options.beginDrag(p)}, (connect, monitor) => ({
 	connect: connect.dragSource(),
@@ -48,34 +47,21 @@ class NodeInner extends Component {
 }))
 class Node extends Component {
 	render() {
-		let { list, index, isMultiNode, isParentDragging, isDragging, options, connect } = this.props;
-		
-		if (isMultiNode) return <NodeInner {...this.props} />;
+		let { list, index, isMultiNode, isParentDragging, isDragging, options, connect, parentConnect } = this.props;
 
-		let { groups, hasChildren } = options.getNormalizedChildGroups(list[index], this.props.path);
-		let multi = options.getNormalizedMultiRow(list[index], this.props.path);
+		if (isMultiNode) return <NodeInner {...this.props} connect={list.length === 1 ? parentConnect : connect } />;
 
-		let children = <div className={options.cx('list-container')}>
-			<NodeListChildGroups {...this.props} groups={groups} isParentDragging={isDragging || isParentDragging} />
-		</div>;
+		let { groups, multi } = options.normalizationHelper.normalize(list[index], this.props.path);
 
-		// ERROR: One is rendered in node list, unconnected => isDragging is allways false, child drop active
-		// TODO: Pass connect down into NodeList
-
-		if (!hasChildren && multi) {
-			return <div>
-				<div className={options.cx('node-anchor')}>
-					<NodeList {...this.props} isMultiNode={true} {...multi} />
-				</div>
-				{multi.list.length === 1 && children}
-			</div>;
-		}
+		let pass = { ...this.props, isParentDragging: isParentDragging || isDragging, parentConnect: connect };
 
 		return <div>
 			<div className={options.cx('node-anchor')}>
-				<NodeInner {...this.props} />
+				{ multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass} /> }
 			</div>
-			{children}
+			<div className={options.cx('list-container')}>
+				{ groups && <NodeListChildGroups {...pass} groups={groups} /> }
+			</div>
 		</div>;
 	}
 }

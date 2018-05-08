@@ -5,7 +5,7 @@ export default function SelectionManager() {
     var cachedHandler = {};
     
     this.getNodeState = function(node, options) {
-        let id = options.getId(node);
+        let id = options.normalizationHelper.getId(node);
 
         if (!cachedHandler[id]) {
             cachedHandler[id] = {
