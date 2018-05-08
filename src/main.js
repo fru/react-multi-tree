@@ -26,7 +26,7 @@ const NodeListChildGroups = ({ groups, path, ...context }) => groups.map((group)
 
 	let titleClass = context.options.cx('group-container');
 	let title = group.title && <div className={titleClass}>{group.title}</div>
-	let list = <NodeList {...context} path={path.add(group.prop)} isMultiNode={false} list={group.list} />
+	let list = <NodeList {...context} path={group.path} list={group.list} />
 
 	return <div key={group.prop}>{title}{list}</div>
 });
@@ -52,7 +52,7 @@ class Node extends Component {
 		
 		if (isMultiNode) return <NodeInner {...this.props} />;
 
-		let { groups, hasChildren } = options.getNormalizedChildGroups(list[index]);
+		let { groups, hasChildren } = options.getNormalizedChildGroups(list[index], this.props.path);
 		let multi = options.getNormalizedMultiRow(list[index], this.props.path);
 
 		let children = <div className={options.cx('list-container')}>

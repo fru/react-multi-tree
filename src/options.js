@@ -59,18 +59,19 @@ export const defaultOptions = ($tree) => {
 
         // Outsource: Normalize Manager
 
-        getNormalizedChildGroups: function (node) {
+        getNormalizedChildGroups: function (node, parentPath) {
             let groups = [];
             let hasChildren = false;
 
 			for(var prop in node) {
                 let title = this._getChildGroupTitle(prop) || '';
                 if (prop === this.propContains || title) {
-                    groups.push({ title, prop, list: node[prop] });
+                    let path = parentPath.add(prop);
+                    groups.push({ title, prop, path, list: node[prop] });
                     if (node[prop].length) hasChildren = true;
                 }
             }
-
+            
             if (!hasChildren) {
                 groups = [{prop: this.propContains, list: []}];
             }
