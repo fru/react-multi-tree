@@ -2,9 +2,35 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragSource, DropTarget } from 'react-dnd';
-import { NodeList, NodeListChildGroups } from './NodeList';
 import { defaultOptions, buildOptions } from './options';
 
+const NodeList = ({ wrapper, path, ...context }) => {
+
+	let { Target, Node } = context.options;
+
+	let content = [<Target {...context} index={0} path={path.add(0)} key={0} />];
+
+	for (var i = 0; i < context.list.length; i++) {
+		let key = context.options.getId(context.list[i]);
+		content.push(<Node   {...context} index={i}   path={path.add(i)}   key={'node_' + key} />);
+		content.push(<Target {...context} index={i+1} path={path.add(i+1)} key={i+1} />);
+	}
+
+	return <div className={wrapper}>{content}</div>;
+};
+
+// Children grouped by property, that may have a title
+
+const NodeListChildGroups = ({ groups, path, ...context }) => groups.map((group) => {
+
+	let titleClass = context.options.cx('group-container');
+	let title = group.title && <div className={titleClass}>{group.title}</div>
+	let list = <NodeList {...context} 
+		path={path.add(group.prop)} isMultiNode={false} list={group.list}
+		wrapper={context.options.cx('list-container-inner')} />
+
+	return <div key={group.prop}>{title}{list}</div>
+});
 
 class NodeInner extends Component {
 	render() {
@@ -56,7 +82,7 @@ class Node extends Component {
 }
 
 @DropTarget('anyform-tree', {drop: (p, m) => p.options.drop(p, m)}, (connect, monitor) => ({
-	connectDropTarget: connect.dropTarget(),
+	connect: connect.dropTarget(),
 	isOver: monitor.isOver(),
 	item: monitor.getItem()
 }))
@@ -70,7 +96,7 @@ class Target extends Component {
 		</div>;
 
 		return <div className={options.cx('target-anchor')}>
-			{this.props.connectDropTarget(target)}
+			{this.props.connect(target)}
 		</div>;
 	}
 }
