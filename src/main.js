@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragSource, DropTarget } from 'react-dnd';
-import { defaultOptions, buildOptions } from './options';
+import { defaultOptions, getOptions } from './options';
 
-const NodeList = ({ wrapper, path, ...context }) => {
+const NodeList = ({ path, ...context }) => {
 
-	let { Target, Node } = context.options;
-
+	let { Target, Node, cx } = context.options;
+	
 	let content = [<Target {...context} index={0} path={path.add(0)} key={0} />];
 
 	for (var i = 0; i < context.list.length; i++) {
@@ -16,7 +16,8 @@ const NodeList = ({ wrapper, path, ...context }) => {
 		content.push(<Target {...context} index={i+1} path={path.add(i+1)} key={i+1} />);
 	}
 
-	return <div className={wrapper}>{content}</div>;
+	let container = context.isMultiNode ? 'node-multi-container' : 'list-container-inner';
+	return <div className={cx(container)}>{content}</div>;
 };
 
 // Children grouped by property, that may have a title
@@ -25,9 +26,7 @@ const NodeListChildGroups = ({ groups, path, ...context }) => groups.map((group)
 
 	let titleClass = context.options.cx('group-container');
 	let title = group.title && <div className={titleClass}>{group.title}</div>
-	let list = <NodeList {...context} 
-		path={path.add(group.prop)} isMultiNode={false} list={group.list}
-		wrapper={context.options.cx('list-container-inner')} />
+	let list = <NodeList {...context} path={path.add(group.prop)} isMultiNode={false} list={group.list} />
 
 	return <div key={group.prop}>{title}{list}</div>
 });
@@ -66,7 +65,7 @@ class Node extends Component {
 		if (!hasChildren && multi) {
 			return <div>
 				<div className={options.cx('node-anchor')}>
-					<NodeList {...this.props} isMultiNode={true} {...multi} wrapper={options.cx('node-multi-container')} />
+					<NodeList {...this.props} isMultiNode={true} {...multi} />
 				</div>
 				{multi.list.length === 1 && children}
 			</div>;
@@ -108,8 +107,12 @@ export class Tree extends Component {
 		this.defaults = defaultOptions(this); 
 	}
 	render() {
-		let options = buildOptions(this.defaults, this.props, {Target, Node});
-		return <NodeList options={options} wrapper={options.cx('anyform-tree')}
-			tree={this.props.nodes} list={this.props.nodes} path={new options.Path()} />;
+		// TODO make sideeffect in recieve props
+		let options = getOptions(this.defaults, this.props, {Target, Node});
+		options.root = this.props.nodes;
+
+		return <div className={options.cx('anyform-tree')}>
+			<NodeList options={options} list={this.props.nodes} path={new options.Path()} />
+		</div>;
 	}
 }

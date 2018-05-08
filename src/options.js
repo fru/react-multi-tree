@@ -108,10 +108,10 @@ export const defaultOptions = ($tree) => {
             item: list[index], 
             path: path.removeMultiWhenNotYetConverted(convertToMulti)
         }),
-        drop: function ({tree, path, options, convertToMulti}, monitor) {
+        drop: function ({path, options, convertToMulti}, monitor) {
             let item = monitor.getItem();
             let recalc = path.recalculateAfterDetach(item.path);
-            options.onDrop(tree, item.path.asArray(), recalc.asArray(), options, item.item, convertToMulti);
+            options.onDrop(item.path.asArray(), recalc.asArray(), options, item.item, convertToMulti);
         },
         targetActive: function (item, parentDragging, before, after, isMultiNode) {
             if (parentDragging || item === before || item === after) {
@@ -152,8 +152,8 @@ export const defaultOptions = ($tree) => {
 
         // TODO use this instead of options parameter?
         
-        onDrop: function (tree, from, to, options, node, convertToMulti) {
-            tree = options._clone(tree);
+        onDrop: function (from, to, options, node, convertToMulti) {
+            let tree = options._clone(options.root);
         
             var fromIndex = from.pop();
             var fromParent = options._getPath(tree, from);
@@ -183,7 +183,7 @@ export const defaultOptions = ($tree) => {
     };
 };
 
-export const buildOptions = (defaults, props, components) => {
+export const getOptions = (defaults, props, components) => {
     let cx = classNames.bind(props.classes || {});
     return Object.assign(defaults, components, { cx }, props);
 };
