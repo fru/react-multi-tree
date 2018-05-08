@@ -33,22 +33,22 @@ const NodeListChildGroups = ({ groups, path, ...context }) => groups.map((group)
 
 class NodeInner extends Component {
 	render() {
-		let { list, index, options, connectDragSource } = this.props;
+		let { list, index, options, connect } = this.props;
 		let { selected, down, up } = options.selectionManager.getNodeState(list[index], options);
 
-		return connectDragSource(<div className={options.cx('node', {selected})} onMouseDown={down} onMouseUp={up}>
+		return connect(<div className={options.cx('node', {selected})} onMouseDown={down} onMouseUp={up}>
 			{options.node(list[index])}
 		</div>);
 	}
 }
 
 @DragSource('anyform-tree', {beginDrag: (p) => p.options.beginDrag(p)}, (connect, monitor) => ({
-	connectDragSource: connect.dragSource(),
+	connect: connect.dragSource(),
 	isDragging: monitor.isDragging()
 }))
 class Node extends Component {
 	render() {
-		let { list, index, isMultiNode, parentDragging, isDragging, options } = this.props;
+		let { list, index, isMultiNode, isParentDragging, isDragging, options, connect } = this.props;
 		
 		if (isMultiNode) return <NodeInner {...this.props} />;
 
@@ -56,7 +56,7 @@ class Node extends Component {
 		let multi = options.getNormalizedMultiRow(list[index], this.props.path);
 
 		let children = <div className={options.cx('list-container')}>
-			<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
+			<NodeListChildGroups {...this.props} groups={groups} isParentDragging={isDragging || isParentDragging} />
 		</div>;
 
 		// ERROR: One is rendered in node list, unconnected => isDragging is allways false, child drop active
@@ -87,8 +87,8 @@ class Node extends Component {
 }))
 class Target extends Component {
 	render() {
-		let { parentDragging, options, isOver, item, list, index, isMultiNode } = this.props;
-		let dragging = item && options.targetActive(item.item, parentDragging, list[index-1], list[index], isMultiNode);
+		let { isParentDragging, options, isOver, item, list, index, isMultiNode } = this.props;
+		let dragging = item && options.targetActive(item.item, isParentDragging, list[index-1], list[index], isMultiNode);
 
 		let target = <div className={options.cx('target', {dragging})}>
 			{dragging && isOver && <div className={options.cx('preview')}></div>}
