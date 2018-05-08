@@ -35,28 +35,34 @@ export const defaultOptions = ($tree) => {
             $tree.setState({});
         },
 
-        // Behaviour
-
-        canDrop: function (tree, from, to) {
-            
-        },
-
-        canDropMulti: function (tree, from, to, index) {
-            
-        },
-
-        canBecomeMultiRow: function (node) {
-            return true;
-        },
-
         // Helper
         
-        getChildGroupName: (n) => n,
+        getChildGroupName: (property) => property,
 
         selectionManager: new SelectionManager(),
 
+        // Behaviour
 
+        // TODO allow non function constants and iterate over nodes
 
+        allowChildren: function (parent, path, children) {
+            return true;
+        },
+
+        allowMultiRow: function (nodes, path) {
+            return true;
+        },
+
+        // Check on hover if these node combinations are valid  
+
+        validateChildrenDrop: function (parent, path, children) {
+            return true;
+        },
+
+        validateMultiRowDrop: function (nodes, path) {
+            return true;
+        },
+        
         // Outsource: Normalize Manager
 
         getNormalizedChildGroups: function (node, parentPath) {
@@ -80,7 +86,7 @@ export const defaultOptions = ($tree) => {
 
         getNormalizedMultiRow: function (node, parentPath) {
             let convertToMulti = !this.isMultiRow(node); 
-            if (convertToMulti && !this.canBecomeMultiRow(node)) return false;
+            if (convertToMulti && !this.allowMultipleInRow(node)) return false;
             
             let list = node[this.propMulti] || [node];
             let path = parentPath.add(this.propMulti);
@@ -94,6 +100,34 @@ export const defaultOptions = ($tree) => {
 
         isMultiRow: function (node) {
 	        return node[this.propMulti] && node[this.propMulti].length;
+        },
+
+
+
+        allowChildren: function (node, path) {
+            return true;
+        },
+
+        allowMultipleInRow: function (node, path) {
+            return true;
+        },
+
+
+
+
+
+        getChildren: function (node, path) {
+            
+
+            
+            
+            if (this.allowChildren(node, path)) {
+                
+            } else {
+
+            }
+
+            return { keys, count };
         },
 
         _getChildGroupTitle: function (prop) {
@@ -117,7 +151,7 @@ export const defaultOptions = ($tree) => {
         targetActive: function (item, parentDragging, before, after, isMultiNode) {
             if (parentDragging || item === before || item === after) {
                 return false;
-            } else if (isMultiNode && this.getNormalizedChildGroups(item).hasChildren) {
+            } else if (isMultiNode && this.getChildren(item).count) {
                 return false;
             }
             return true;
@@ -187,7 +221,7 @@ export const defaultOptions = ($tree) => {
 export const getContext = (defaults, props, components, root) => {
     let cx = classNames.bind(props.classes || {});
     // TODO use clever caching to only return a context when rendering is affected by property changes 
-
+    // TODO include setSelected and cache as state
     let context = Object.assign(defaults, components, { cx }, props);
     context.root = root;
     return context;
