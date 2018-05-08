@@ -63,6 +63,9 @@ class Node extends Component {
 			<NodeListChildGroups {...this.props} groups={groups} parentDragging={isDragging || parentDragging} />
 		</div>;
 
+		// ERROR: One is rendered in node list, unconnected => isDragging is allways false, child drop active
+		// TODO: Pass connect down into NodeList
+
 		if (!hasChildren && multi) {
 			return <div>
 				<div className={options.cx('node-anchor')}>
