@@ -183,7 +183,11 @@ export const defaultOptions = ($tree) => {
     };
 };
 
-export const getOptions = (defaults, props, components) => {
+export const getContext = (defaults, props, components, root) => {
     let cx = classNames.bind(props.classes || {});
-    return Object.assign(defaults, components, { cx }, props);
+    // TODO use clever caching to only return a context when rendering is affected by property changes 
+
+    let context = Object.assign(defaults, components, { cx }, props);
+    context.root = root;
+    return context;
 };

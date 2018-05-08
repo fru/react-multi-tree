@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragSource, DropTarget } from 'react-dnd';
-import { defaultOptions, getOptions } from './options';
+import { defaultOptions, getContext } from './options';
 
 const NodeList = ({ path, ...context }) => {
 
@@ -106,13 +106,12 @@ export class Tree extends Component {
 		super(props);
 		this.defaults = defaultOptions(this); 
 	}
-	render() {
-		// TODO make sideeffect in recieve props
-		let options = getOptions(this.defaults, this.props, {Target, Node});
-		options.root = this.props.nodes;
 
-		return <div className={options.cx('anyform-tree')}>
-			<NodeList options={options} list={this.props.nodes} path={new options.Path()} />
+	render() {
+		let context = getContext(this.defaults, this.props, {Target, Node}, this.props.nodes);
+		
+		return <div className={context.cx('anyform-tree')}>
+			<NodeList options={context} list={this.props.nodes} path={new context.Path()} />
 		</div>;
 	}
 }
