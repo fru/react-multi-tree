@@ -41,7 +41,7 @@ const NodeInner = ({ list, index, options, connect }) => {
 	</div>);
 };
 
-@DragSource('anyform-tree', {beginDrag: (p) => p.options.beginDrag(p)}, (connect, monitor) => ({
+@DragSource('anyform-tree', {beginDrag: (p) => p.options.dragHelper.beginDrag(p)}, (connect, monitor) => ({
 	connect: connect.dragSource(),
 	isDragging: monitor.isDragging()
 }))
@@ -66,7 +66,7 @@ class Node extends Component {
 	}
 }
 
-@DropTarget('anyform-tree', {drop: (p, m) => p.options.drop(p, m)}, (connect, monitor) => ({
+@DropTarget('anyform-tree', {drop: (p, m) => p.options.dragHelper.drop(p, m)}, (connect, monitor) => ({
 	connect: connect.dropTarget(),
 	isOver: monitor.isOver(),
 	item: monitor.getItem()
@@ -74,7 +74,7 @@ class Node extends Component {
 class Target extends Component {
 	render() {
 		let { isParentDragging, options, isOver, item, list, index, isMultiNode } = this.props;
-		let dragging = item && options.targetActive(item.item, isParentDragging, list[index-1], list[index], isMultiNode);
+		let dragging = item && options.dragHelper.targetActive(item.item, isParentDragging, list[index-1], list[index], isMultiNode);
 
 		let target = <div className={options.cx('target', {dragging})}>
 			{dragging && isOver && <div className={options.cx('preview')}></div>}
