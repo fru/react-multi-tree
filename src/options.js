@@ -47,13 +47,9 @@ export const defaultOptions = ($tree) => {
 
         // TODO allow non function constants and iterate over nodes
 
-        allowChildren: (parent, path, children, key) => true,
-        allowMultiRow: (nodes, path) => true,
-
-        // Check on hover if these node combinations are valid  
-
-        validateChildrenDrop: (parent, path, children, key) => true,
-        validateMultiRowDrop: (nodes, path) => true,
+        // children, row: { beforeDrop, afterDrop }
+        allowChildren: (parent, key, path, children) => true,
+        allowMultiRow: (node, path, row) => true,
 
         // Outsource: DragManager
 
