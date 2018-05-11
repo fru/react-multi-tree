@@ -53,8 +53,14 @@ export const defaultOptions = ($tree) => {
         // TODO allow non function constants and iterate over nodes
         // children, row: { beforeDrop, afterDrop }
 
-        allowChildren: (parent, key, path, children) => true,
-        allowMultiRow: (node, path, row) => true
+        allowChildren: function (parent, prop, path, children) { 
+            console.log(parent, prop, path.asArray(), children);
+            return true;
+        },
+        allowMultiRow: function (nodes, path, row) {
+            console.log(nodes, path.asArray(), row);
+            return false;
+        }
     };
 };
 

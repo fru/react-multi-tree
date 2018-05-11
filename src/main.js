@@ -26,7 +26,7 @@ const NodeListChildGroups = ({ groups, path, ...context }) => groups.map((group)
 
 	let titleClass = context.options.cx('group-container');
 	let title = group.title && <div className={titleClass}>{group.title}</div>
-	let list = <NodeList {...context} path={group.path} list={group.list} />
+	let list = <NodeList {...context} group={group.prop} path={group.path} list={group.list} />
 
 	return <div key={group.prop}>{title}{list}</div>
 });
@@ -48,19 +48,19 @@ const NodeInner = ({ list, index, options, connect }) => {
 class Node extends Component {
 	render() {
 		let { list, index, isMultiNode, isParentDragging, isDragging, options, connect, parentConnect } = this.props;
-
-		if (isMultiNode) return <NodeInner {...this.props} connect={list.length === 1 ? parentConnect : connect } />;
-
-		let { groups, multi } = options.normalizationHelper.normalize(list[index], this.props.path);
+		if (isMultiNode) {
+			return <NodeInner {...this.props} connect={list.length === 1 ? parentConnect : connect } />;
+		}
 
 		let pass = { ...this.props, isParentDragging: isParentDragging || isDragging, parentConnect: connect };
 
+		let { groups, multi } = options.normalizationHelper.normalize(list[index], this.props.path);
 		return <div>
 			<div className={options.cx('node-anchor')}>
 				{ multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass} /> }
 			</div>
 			<div className={options.cx('list-container')}>
-				{ groups && <NodeListChildGroups {...pass} groups={groups} /> }
+				{ groups && <NodeListChildGroups {...pass} groups={groups} parent={list[index]} /> }
 			</div>
 		</div>;
 	}
@@ -73,11 +73,12 @@ class Node extends Component {
 }))
 class Target extends Component {
 	render() {
-		let { isParentDragging, options, isOver, item, list, index, isMultiNode } = this.props;
-		let dragging = item && options.dragHelper.targetActive(item.item, isParentDragging, list[index-1], list[index], isMultiNode);
+		let { options, item, isOver } = this.props;
+		let visible = options.dragHelper.targetVisible(this.props, isOver, item);
+		let preview = options.dragHelper.targetPreview(this.props, isOver, item);
 
-		let target = <div className={options.cx('target', {dragging})}>
-			{dragging && isOver && <div className={options.cx('preview')}></div>}
+		let target = <div className={options.cx('target', {dragging: visible})}>
+			{visible && preview && <div className={options.cx('preview')}></div>}
 		</div>;
 
 		return <div className={options.cx('target-anchor')}>
