@@ -24,7 +24,7 @@ TransformHelper.prototype._normalizeMultiRow = function (tree, from, fromParent)
     }
 };
 
-TransformHelper.prototype.onDrop = function (from, to, node, convertToMulti) {
+TransformHelper.prototype.onDrop = function (from, to, node) {
     let tree = this._clone(this.options.root);
 
     var fromIndex = from.pop();
@@ -37,7 +37,7 @@ TransformHelper.prototype.onDrop = function (from, to, node, convertToMulti) {
     var toName = to.pop();
     var toParent = this._getPath(tree, to);
 
-    if (convertToMulti) {
+    if (toName === this.options.propMulti && !toParent[this.options.propMulti]) {
         toParent = this._transformToMultiRow(toParent);
         var toReplaceIndex = to.pop();
         var toReplaceParent = this._getPath(tree, to);

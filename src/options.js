@@ -49,16 +49,13 @@ export const defaultOptions = ($tree) => {
         transformHelper: new TransformHelper(),
 
         // Behaviour
-
-        // TODO allow non function constants and iterate over nodes
-        // children, row: { beforeDrop, afterDrop }
-
-        allowChildren: function (parent, prop, path, children) { 
-            console.log(parent, prop, path.asArray(), children);
+        
+        allowChildren: function (parent, prop, path, children) {
+            //console.log(parent, prop, path.asArray(), children);
             return true;
         },
         allowMultiRow: function (nodes, path, row) {
-            console.log(nodes, path.asArray(), row);
+            //console.log(nodes, path.asArray(), row);
             return false;
         }
     };
