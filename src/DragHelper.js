@@ -10,7 +10,7 @@ DragHelper.prototype.drop = function (props, monitor) {
 
     let item = monitor.getItem();
     let recalc = props.path.recalculateAfterDetach(item.path);
-    this.options.transformHelper.onDrop(item.path.asArray(), recalc.asArray(), item.item);
+    this.options.transformHelper.onDrop(item.path, recalc, item.item);
 };
 
 DragHelper.prototype.targetVisible = function (props, isOver, item) {
@@ -32,7 +32,7 @@ DragHelper.prototype.targetPreview = function (props, isOver, item) {
     var value = { before: list.slice(), after: list.slice(), index, source: item };
 
     // TODO: More inteligent logic / share with transformationHelper?
-    value.afterDrop.splice(index, 0, item.item);
+    value.after.splice(index, 0, item.item);
 
     // TODO allow non function constants and iterate over nodes
 

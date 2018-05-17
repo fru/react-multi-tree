@@ -4,12 +4,12 @@ function Segment(path, isMultiRow, index) {
     this.getPath = () => (path || []).slice();
     this.getIndex = () => index >= 0 ? index : null;
     this.isMultiRow = () => isMultiRow;
-    this.setIndex = (i) => new Segment(path, isMultiRow, i);
+    this.setIndex = (i) => new Segment(path || [], isMultiRow, i);
 }
 
 export default function Path(segments) {
     segments = segments || [new Segment([])];
-    this.getSegments = () => (segments).slice();
+    this.getSegments = () => segments.slice();
     this.getLastSegment = () => segments[segments.length - 1];
 }
 
@@ -29,12 +29,14 @@ Path.prototype._splice = function(index, count, ...added) {
     var segments = this.getSegments();
     if (index === null) index = segments.length - 1;
     
-    var removed  = segments.splice(index, count, ...added);
+    var removed = segments.splice(index, count, ...added);
     return {removed, path: new Path(segments)};
 };
 
 Path.prototype._startWith = function (prefix) {
-    var path = this._asArray(), prefix = detached._asArray();
+    var path = this._asArray();
+    prefix = prefix._asArray();
+
     for(var i = 0; i < prefix.length; i++) {
         if (path[i] !== prefix[i]) return false;
     }
@@ -51,7 +53,7 @@ Path.prototype.removeLast = function() {
 
 Path.prototype.setIndex = function(i) {
     let {removed, path} = this._splice(null, 1);
-    return this._splice(null, 0, removed[0].setIndex(i)).path;
+    return path._splice(null, 0, removed[0].setIndex(i)).path;
 };
 
 Path.prototype.recalculateAfterDetach = function(detached) {
