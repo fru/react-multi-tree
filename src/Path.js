@@ -8,7 +8,8 @@ function Segment(path, isMultiRow, index) {
 }
 
 export default function Path(segments) {
-    this.getSegments = () => segments.slice();
+    segments = segments || [new Segment([])];
+    this.getSegments = () => (segments).slice();
     this.getLastSegment = () => segments[segments.length - 1];
 }
 
