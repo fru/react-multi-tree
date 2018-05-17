@@ -2,7 +2,7 @@ export default function DragHelper() {}
 
 DragHelper.prototype.beginDrag = ({ path, list, index, convertToMulti }) => ({
     item: list[index], 
-    path: convertToMulti ? path.removeSegment().path : path
+    path: convertToMulti ? path.removeLast() : path
 });
 
 DragHelper.prototype.drop = function (props, monitor) {
