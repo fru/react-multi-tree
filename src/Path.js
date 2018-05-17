@@ -1,44 +1,27 @@
-export function Segment(path, index) {    
-    var _path = path || [];
-    var _index = index;
-    
-    this.getPath = function () {
-        return _path.slice();
-    };
-
-    this.getIndex = function () {
-        return _index;
-    };
+export function Segment(path, isMultiRow, index) {
+    this.getPath = () => (path || []).slice();
+    this.getIndex = () => index >= 0 ? index : null;
+    this.isMultiRow = () => isMultiRow;
+    this.setIndex = (i) => new Segment(path, isMultiRow, i);
 }
 
-Segment.prototype.hasIndex = function () {
-    return !isNaN(+this.getIndex());
-};
-
 export default function Path(segments) {
-    var _segments = segments || [];
-    
-    this.getSegments = function () {
-        return _segments.slice();
-    };
+    this.getSegments = () => segments.slice();
 }
 
 Path.prototype.asArray = function () {
     var result = [];
     for (var segment of this.getSegments()) {
         for (var prop of segment.getPath()) result.push(prop);
-        if (segment.hasIndex()) result.push(segment.getIndex());
+        if (segment.getIndex() !== null) result.push(segment.getIndex());
     }    
     return result;
 };
 
 Path.prototype.find = function(context) {
-    for (var prop of this.asArray()) {
-        context = context[prop];
-    }
+    for (var prop of this.asArray()) context = context[prop];
     return context;
 };
-
 
 Path.prototype._splice = function(index, count, ...added) {
     var segments = this.getSegments();
@@ -54,9 +37,8 @@ Path.prototype.add = function(segment) {
 
 Path.prototype.setIndex = function(i) {
     let {removed, path} = this._splice(null, 1);
-    return path.add(new Segment(removed[0].getPath(), i));
+    return path.add(removed[0].setIndex(i));
 };
-
 
 Path.prototype._startWith = function (prefix) {
     var path = this.asArray(), prefix = detached.asArray();
@@ -74,4 +56,4 @@ Path.prototype.recalculateAfterDetach = function(detached) {
 
     let recalculated = related.setIndex(related.getIndex() - 1);
     return this._splice(detached.length - 1, 1, recalculated);
-}
+};
