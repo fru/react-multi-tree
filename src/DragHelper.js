@@ -2,7 +2,7 @@ export default function DragHelper() {}
 
 DragHelper.prototype.beginDrag = ({ path, list, index, convertToMulti }) => ({
     item: list[index], 
-    path: path.removeMultiWhenNotYetConverted(convertToMulti)
+    path: convertToMulti ? path.removeSegment().path : path
 });
 
 DragHelper.prototype.drop = function (props, monitor) {
@@ -29,7 +29,7 @@ DragHelper.prototype.targetPreview = function (props, isOver, item) {
     if (!item || !item.item) return false;
     let { index, list, isMultiNode, path, parent, group } = props;
 
-    var value = { beforeDrop: list.slice(), afterDrop: list.slice(), index, source: item };
+    var value = { before: list.slice(), after: list.slice(), index, source: item };
 
     // TODO: More inteligent logic / share with transformationHelper?
     value.afterDrop.splice(index, 0, item.item);

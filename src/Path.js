@@ -1,37 +1,77 @@
-export default function Path(path) {
-    var _path = path ? path.slice() : [];
-
-    this.asArray = function() {
+export function Segment(path, index) {    
+    var _path = path || [];
+    var _index = index;
+    
+    this.getPath = function () {
         return _path.slice();
+    };
+
+    this.getIndex = function () {
+        return _index;
     };
 }
 
-Path.prototype._differentPrefix = function(prefix, lengthChecked) {
-    var path = this.asArray();
-    for(var i = 0; i < lengthChecked; i++) {
-        if (path[i] !== prefix[i]) return true;
+Segment.prototype.hasIndex = function () {
+    return !isNaN(+this.getIndex());
+};
+
+export default function Path(segments) {
+    var _segments = segments || [];
+    
+    this.getSegments = function () {
+        return _segments.slice();
+    };
+}
+
+Path.prototype.asArray = function () {
+    var result = [];
+    for (var segment of this.getSegments()) {
+        for (var prop of segment.getPath()) result.push(prop);
+        if (segment.hasIndex()) result.push(segment.getIndex());
+    }    
+    return result;
+};
+
+Path.prototype.find = function(context) {
+    for (var prop of this.asArray()) {
+        context = context[prop];
     }
+    return context;
+};
+
+
+Path.prototype._splice = function(index, count, ...added) {
+    var segments = this.getSegments();
+    if (index === null) index = segments.length - 1;
+    
+    var removed  = segments.splice(index, count, ...added);
+    return {removed, path: new Path(segments)};
 };
 
 Path.prototype.add = function(segment) {
-    return new Path(this.asArray().concat(Array.isArray(segment) ? segment: [segment]));
+    return this._splice(null, 0, segment).path;
 };
 
-Path.prototype.clone = function(transform) {
-    transform = transform || (x => x);
-    return new Path(transform(this.asArray()));
+Path.prototype.setIndex = function(i) {
+    let {removed, path} = this._splice(null, 1);
+    return path.add(new Segment(removed[0].getPath(), i));
+};
+
+
+Path.prototype._startWith = function (prefix) {
+    var path = this.asArray(), prefix = detached.asArray();
+    for(var i = 0; i < prefix.length; i++) {
+        if (path[i] !== prefix[i]) return false;
+    }
+    return true;
 };
 
 Path.prototype.recalculateAfterDetach = function(detached) {
-    if (detached.asArray) detached = detached.asArray();
-    var index = detached.length - 1, path = this.asArray();
-    if (this._differentPrefix(detached, index)) return this;
-    if (path[index] < detached[index]) return this;
-    return this.clone(path => { path[index]--; return path; });
-};
+    let related = this.getSegments()[detached.length - 1];
 
-Path.prototype.removeMultiWhenNotYetConverted = function(convertToMulti) {
-    if (!convertToMulti) return this;
-    let path = this.asArray();
-    return new Path(path.slice(0, path.length - 2));
-};
+    if (!this._startWith(detached.setIndex(null))) return this;
+    if (related.getIndex() < detached[detached.length - 1].getIndex()) return this;
+
+    let recalculated = related.setIndex(related.getIndex() - 1);
+    return this._splice(detached.length - 1, 1, recalculated);
+}
