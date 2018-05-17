@@ -56,7 +56,7 @@ export const defaultOptions = ($tree) => {
         },
         allowMultiRow: function (nodes, path, row) {
             //console.log(nodes, path.asArray(), row);
-            return false;
+            return true;
         }
     };
 };

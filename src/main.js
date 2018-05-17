@@ -8,12 +8,12 @@ const NodeList = ({ path, ...context }) => {
 
 	let { Target, Node, cx } = context.options;
 	
-	let content = [<Target {...context} index={0} path={path.add(0)} key={0} />];
+	let content = [<Target {...context} index={0} path={path.setIndex(0)} key={0} />];
 
 	for (var i = 0; i < context.list.length; i++) {
 		let key = context.options.normalizationHelper.getId(context.list[i]);
-		content.push(<Node   {...context} index={i}   path={path.add(i)}   key={'node_' + key} />);
-		content.push(<Target {...context} index={i+1} path={path.add(i+1)} key={i+1} />);
+		content.push(<Node   {...context} index={i}   path={path.setIndex(i)}   key={'node_' + key} />);
+		content.push(<Target {...context} index={i+1} path={path.setIndex(i+1)} key={i+1} />);
 	}
 
 	let container = context.isMultiNode ? 'node-multi-container' : 'list-container-inner';

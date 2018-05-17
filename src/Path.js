@@ -1,7 +1,6 @@
-// TODO test before use
-// TODO use new methods
+// TODO test
 
-export function Segment(path, isMultiRow, index) {
+function Segment(path, isMultiRow, index) {
     this.getPath = () => (path || []).slice();
     this.getIndex = () => index >= 0 ? index : null;
     this.isMultiRow = () => isMultiRow;
@@ -41,8 +40,8 @@ Path.prototype._startWith = function (prefix) {
     return true;
 };
 
-Path.prototype.add = function(segment) {
-    return this._splice(null, 0, segment).path;
+Path.prototype.add = function(path, isMultiRow, index) {
+    return this._splice(null, 0, new Segment(path, isMultiRow, index)).path;
 };
 
 Path.prototype.removeLast = function() {
@@ -51,7 +50,7 @@ Path.prototype.removeLast = function() {
 
 Path.prototype.setIndex = function(i) {
     let {removed, path} = this._splice(null, 1);
-    return path.add(removed[0].setIndex(i));
+    return this._splice(null, 0, removed[0].setIndex(i)).path;
 };
 
 Path.prototype.recalculateAfterDetach = function(detached) {

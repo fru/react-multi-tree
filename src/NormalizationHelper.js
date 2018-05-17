@@ -25,7 +25,7 @@ NormalizationHelper.prototype.getChildren = function (node) {
 
 NormalizationHelper.prototype._extendGroups = function (groups, node, parentPath) {
     return groups.map(group => {
-        return {...group, path: parentPath.add(group.prop), list: node[group.prop] || []}
+        return {...group, path: parentPath.add([group.prop]), list: node[group.prop] || []}
     });
 };
 
@@ -33,8 +33,8 @@ NormalizationHelper.prototype._getMultiRow = function (node, parentPath) {
     let multi = node[this.options.propMulti]
     let convertToMulti = !multi || !multi.length;
     let list = convertToMulti ? [node] : multi;
-
-    return { list, convertToMulti, path: parentPath.add(this.options.propMulti) };
+    
+    return { list, convertToMulti, path: parentPath.add([this.options.propMulti], true) };
 };
 
 NormalizationHelper.prototype.normalize = function (node, parentPath) {

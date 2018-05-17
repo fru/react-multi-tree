@@ -29,7 +29,6 @@ TransformHelper.prototype._insert = function (tree, detached, to) {
 
 TransformHelper.prototype.onDrop = function (from, to) {
     let tree = this._clone(this.options.root);
-    let detached = this._detach(tree, from);
-    this._insert(tree, detached, to);
+    this._insert(tree, this._detach(tree, from), to);
     this.options.onChange(tree);
 };
