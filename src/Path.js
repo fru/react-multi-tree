@@ -28,7 +28,7 @@ Path.prototype._asArray = function () {
 Path.prototype._splice = function(index, count, ...added) {
     var segments = this.getSegments();
     if (index === null) index = segments.length - 1;
-    
+
     var removed = segments.splice(index, count, ...added);
     return {removed, path: new Path(segments)};
 };
@@ -52,8 +52,9 @@ Path.prototype.removeLast = function() {
 };
 
 Path.prototype.setIndex = function(i) {
-    let {removed, path} = this._splice(null, 1);
-    return path._splice(null, 0, removed[0].setIndex(i)).path;
+    var segments = this.getSegments();
+    segments[segments.length-1] = segments[segments.length-1].setIndex(i);
+    return new Path(segments);
 };
 
 Path.prototype.recalculateAfterDetach = function(detached) {
