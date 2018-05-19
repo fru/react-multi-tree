@@ -8,6 +8,10 @@ TransformHelper.prototype._transformToMultiRow = function (parent, index) {
     return {[this.options.propMulti]: [parent[index]]};
 };
 
+TransformHelper.prototype._transformAddChildren = function (parent, index) {
+    return {[this.options.propContains]: [], ...parent[index]}; 
+};
+
 TransformHelper.prototype._removeMultiRow = function (parent, index) {
     return parent[index][this.options.propMulti][0];
 };
@@ -21,8 +25,12 @@ TransformHelper.prototype._detach = function (tree, from) {
 };
 
 TransformHelper.prototype._insert = function (tree, detached, to) {
-    if (to.getLastSegment().isMultiRow() && !to.setIndex(null).existsInTree(tree)) {
-        to.removeLast().mapInTree(tree, (p, i) => this._transformToMultiRow(p, i));
+    if (!to.setIndex(null).existsInTree(tree)) {
+        if (to.getLastSegment().isMultiRow()) {
+            to.removeLast().mapInTree(tree, (p, i) => this._transformToMultiRow(p, i));
+        } else {
+            to.removeLast().mapInTree(tree, (p, i) => this._transformAddChildren(p, i));
+        }
     }
     to.insertInTree(tree, detached);
 };
