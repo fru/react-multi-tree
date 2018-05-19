@@ -65,7 +65,7 @@ Path.prototype.recalculateAfterDetach = function(detached) {
     if (related.getIndex() < detached.getLastSegment().getIndex()) return this;
 
     let recalculated = related.setIndex(related.getIndex() - 1);
-    return this._splice(index, 1, recalculated);
+    return this._splice(index, 1, recalculated).path;
 };
 
 

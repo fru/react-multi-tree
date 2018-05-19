@@ -15,14 +15,14 @@ TransformHelper.prototype._removeMultiRow = function (parent, index) {
 TransformHelper.prototype._detach = function (tree, from) {
     let {detached, parent} = from.detachInTree(tree);
     if (parent.length === 1 && from.getLastSegment().isMultiRow()) {
-        from.removeLast().mapInTree((p, i) => this._removeMultiRow(p, i));
+        from.removeLast().mapInTree(tree, (p, i) => this._removeMultiRow(p, i));
     }
     return detached;
 };
 
 TransformHelper.prototype._insert = function (tree, detached, to) {
     if (to.getLastSegment().isMultiRow() && !to.setIndex(null).existsInTree(tree)) {
-        to.removeLast().mapInTree((p, i) => this._transformToMultiRow(p, i));
+        to.removeLast().mapInTree(tree, (p, i) => this._transformToMultiRow(p, i));
     }
     to.insertInTree(tree, detached);
 };
