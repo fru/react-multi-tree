@@ -43,6 +43,14 @@ Path.prototype._startWith = function (prefix) {
     return true;
 };
 
+Path.prototype.equals = function (path) {
+    path = path._asArray();
+    for(var prop of this._asArray()) {
+        if (path.shift() !== prop) return false; 
+    }
+    return path.length === 0;
+};
+
 Path.prototype.add = function(path, isMultiRow, index) {
     return this._splice(null, 0, new Segment(path, isMultiRow, index)).path;
 };

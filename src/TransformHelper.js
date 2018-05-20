@@ -5,7 +5,7 @@ TransformHelper.prototype._clone = function (context) {
 };
 
 TransformHelper.prototype._transformToMultiRow = function (parent, index) {
-    return {[this.options.propMulti]: [parent[index]]};
+    return this.options.normalizationHelper.setRandomId({[this.options.propMulti]: [parent[index]]});
 };
 
 TransformHelper.prototype._transformAddChildren = function (parent, index) {

@@ -75,10 +75,10 @@ class Target extends Component {
 	render() {
 		let { options, item, isOver } = this.props;
 		let visible = options.dragHelper.targetVisible(this.props, isOver, item);
-		let preview = isOver && options.dragHelper.targetPreview(this.props, isOver, item);
+		let preview = visible && isOver && options.dragHelper.targetPreview(this.props, isOver, item);
 
 		let target = <div className={options.cx('target', {dragging: visible})}>
-			{visible && preview && <div className={options.cx('preview')}></div>}
+			{preview && <div className={options.cx('preview')}></div>}
 		</div>;
 
 		return <div className={options.cx('target-anchor')}>

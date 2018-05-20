@@ -1,7 +1,11 @@
 export default function NormalizationHelper() {}
 
 NormalizationHelper.prototype.getId = function (node) {
-    return node[this.options.propId];
+    return node && node[this.options.propId];
+};
+
+NormalizationHelper.prototype.setRandomId = function (value) {
+    return {[this.options.propId]: Math.random() * 34359738368, ...value};
 };
 
 NormalizationHelper.prototype.getChildren = function (node) {
