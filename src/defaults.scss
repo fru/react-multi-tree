@@ -76,21 +76,13 @@
 
       .target {
         z-index: 200 !important;
-        width: 0;
+        width: 2 * $target-overlay + $vertical-spacing;
 
         &.visible {
-          width: 2 * $target-overlay + $vertical-spacing;
           height: auto;
           top: 0;
           left: -$target-overlay;
           bottom: 0;
-
-          // Important that the targets become "slowly" visible to not abort the drag
-          -webkit-transition: width 500ms;
-          -moz-transition: width 500ms;
-          -ms-transition: width 500ms;
-          -o-transition: width 500ms;
-          transition: width 500ms;
         }
 
         .target-preview {
