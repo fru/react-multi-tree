@@ -24,11 +24,11 @@ const NodeList = ({ path, ...context }) => {
 
 // Children grouped by property, that may have a title
 
-const NodeListChildGroups = ({ groups, path, marginLeft, ...context }) => groups.map((group) => {
+const NodeListChildGroups = ({ groups, path, options, ...context }) => groups.map((group) => {
 
-	let titleClass = context.options.cx('group-container');
-	let title = group.title && <div className={titleClass} style={{marginLeft: marginLeft(1)}}>{group.title}</div>
-	let list = <NodeList {...context} group={group.prop} path={group.path} list={group.list} />
+	let titleClass = options.cx('group-container');
+	let title = group.title && <div className={titleClass} style={options.indentLeft(path, 1)}>{group.title}</div>
+	let list = <NodeList {...context} options={options} group={group.prop} path={group.path} list={group.list} />
 
 	return <div key={group.prop}>{title}{list}</div>
 });
@@ -57,10 +57,11 @@ class Node extends Component {
 		let pass = { ...this.props, isParentDragging: isParentDragging || isDragging, parentConnect: connect };
 
 		let { groups, multi } = options.normalizationHelper.normalize(list[index], this.props.path);
+		let indent = isMultiNode ? null : options.indentLeft(this.props.path, 0);
+		let inner = multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass}  />;
+
 		return <Fragment>
-			<div style={{marginLeft: this.props.marginLeft(0)}}>
-				{ multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass}  /> }
-			</div>
+			<div style={indent}>{inner}</div>
 			{ groups && <NodeListChildGroups {...pass} groups={groups} parent={list[index]} /> }
 		</Fragment>;
 	}
@@ -73,14 +74,15 @@ class Node extends Component {
 }))
 class Target extends Component {
 	render() {
-		let { options, item, isOver, path, marginLeft } = this.props;
+		let { options, isMultiNode, item, isOver, path } = this.props;
 		let visible = options.dragHelper.targetVisibleCached(this.props, isOver, item, options, path);
+		let indent = isMultiNode ? null : options.indentLeft(path, 0);
 
 		let target = <div className={options.cx('target', {visible})} style={{zIndex: path.getDepth() + 100}}>
 			{isOver && <div className={options.cx('target-preview')}></div>}
 		</div>;
 
-		return <div className={options.cx('target-anchor', {visible})} style={{marginLeft: marginLeft(0)}}>
+		return <div className={options.cx('target-anchor', {visible})} style={indent}>
 			{this.props.connect(target)}
 		</div>;
 	}
