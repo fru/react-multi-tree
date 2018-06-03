@@ -35,7 +35,7 @@ $color-highlight: lighten(#079dc3, 6);
     background-color: white;
   }
 
-  .selected .node {
+  .node.selected  {
     background-color: lighten(#079dc3, 50);
     border: 1px solid #c3c3c3;
   }

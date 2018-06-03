@@ -12,11 +12,6 @@
     position: relative;
   }
 
-  .list-container {
-    margin-top: -($vertical-spacing + $target-overlay);
-    padding-top: ($vertical-spacing + $target-overlay);
-  }
-
   .group-container {
     margin-bottom: $vertical-spacing;
   }
@@ -52,7 +47,7 @@
         transition: height 500ms;
       }
 
-      .preview {
+      .target-preview {
         position: absolute;
         background-color: $color-highlight;
         height: $vertical-spacing;
@@ -77,6 +72,7 @@
     .target-anchor {
       width: $vertical-spacing;
       min-width: $vertical-spacing;
+      //margin-left: -$vertical-spacing;
 
       .target {
         z-index: 200 !important;
@@ -97,7 +93,7 @@
           transition: width 500ms;
         }
 
-        .preview {
+        .target-preview {
           width: $vertical-spacing;
           left: $target-overlay;
           top: 0;

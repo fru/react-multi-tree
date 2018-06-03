@@ -17,8 +17,8 @@ const NodeList = ({ path, ...context }) => {
 		content.push(<Node   {...context} index={i}   path={path.setIndex(i)}   key={'node_' + key} />);
 		content.push(<Target {...context} index={i+1} path={path.setIndex(i+1)} key={i+1} />);
 	}
-
-	let container = context.isMultiNode ? 'node-multi-container' : 'list-container-inner';
+	
+	let container = context.isMultiNode && 'node-multi-container';
 	return <div className={cx(container)}>{content}</div>;
 };
 
@@ -58,12 +58,10 @@ class Node extends Component {
 
 		let { groups, multi } = options.normalizationHelper.normalize(list[index], this.props.path);
 		return <Fragment>
-			<div className={options.cx('node-anchor')} style={{marginLeft: this.props.marginLeft(0)}}>
+			<div style={{marginLeft: this.props.marginLeft(0)}}>
 				{ multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass}  /> }
 			</div>
-			<div className={options.cx('list-container')}>
-				{ groups && <NodeListChildGroups {...pass} groups={groups} parent={list[index]} /> }
-			</div>
+			{ groups && <NodeListChildGroups {...pass} groups={groups} parent={list[index]} /> }
 		</Fragment>;
 	}
 }
@@ -79,7 +77,7 @@ class Target extends Component {
 		let visible = options.dragHelper.targetVisibleCached(this.props, isOver, item, options, path);
 
 		let target = <div className={options.cx('target', {visible})} style={{zIndex: path.getDepth() + 100}}>
-			{isOver && <div className={options.cx('preview')}></div>}
+			{isOver && <div className={options.cx('target-preview')}></div>}
 		</div>;
 
 		return <div className={options.cx('target-anchor', {visible})} style={{marginLeft: marginLeft(0)}}>

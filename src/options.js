@@ -15,6 +15,12 @@ export const defaultOptions = ($tree) => {
 
         indent: 24,
         indentUnit: 'px',
+        indentLeft: function (path, added = 0) { 
+            return {
+                marginLeft: (added + path.getDepth()) * this.indent + this.indentUnit
+            };
+        },
+
         propId: 'id',
         propContains: 'contains',
         propMulti: 'multi',
