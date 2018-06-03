@@ -7,7 +7,7 @@
   padding: $vertical-spacing;
   padding-bottom: 0;
 
-  .node {
+  .row {
     margin-bottom: $vertical-spacing;
     position: relative;
   }
@@ -89,7 +89,7 @@
           width: $vertical-spacing;
           left: $target-overlay;
           top: 0;
-          bottom: $vertical-spacing;
+          bottom: 0;
           right: auto;
           height: auto;
         }

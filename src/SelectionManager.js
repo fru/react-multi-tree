@@ -3,17 +3,8 @@ export default function SelectionManager() {
     var cachedSelectionMap = null;
     var cachedSelected = null;
     var cachedHandler = {};
-    
-    this.getNodeState = function(node, options) {
-        let id = options.normalizationHelper.getId(node);
 
-        if (!cachedHandler[id]) {
-            cachedHandler[id] = {
-                up: (e) => this.up(e, id, options),
-                down: (e) => this.down(e, id, options), 
-            }
-        }
-
+    function _getCachedMap(options) {
         if (cachedSelected !== options.selected) {
             cachedSelectionMap = {};
             for (let s of options.selected) {
@@ -21,19 +12,41 @@ export default function SelectionManager() {
             }
             cachedSelected = options.selected;
         }
-        return { selected: cachedSelectionMap[id], ...cachedHandler[id] };
+        return cachedSelectionMap;
+    }
+    
+    this.getNodeState = function(node, options) {
+        let id = options.normalizationHelper.getId(node);
+
+        if (!cachedHandler[id]) {
+            cachedHandler[id] = {
+                up: (e) => this._up(e, id, options),
+                down: (e) => this._down(e, id, options), 
+            }
+        }
+
+        return { selected: _getCachedMap(options)[id], ...cachedHandler[id] };
+    };
+
+    this.isRowSelected = function (node, multi, options) {
+        var checked = multi ? multi.list : [node];
+        for (var n of checked) {
+            let id = options.normalizationHelper.getId(n);
+            if (_getCachedMap(options)[id]) return true;
+        }
+        return false;
     };
 }
 
-SelectionManager.prototype.extendExistingSelection = function (e, options) { 
+SelectionManager.prototype._extendExistingSelection = function (e, options) { 
     return options.selectedAllowMultiple && e.shiftKey;  
 };
 
-SelectionManager.prototype.down = function (e, id, options) {
+SelectionManager.prototype._down = function (e, id, options) {
     this.downPressedTime = Date.now();
     this.downResetIfNotDrag = false;
 
-    if (this.extendExistingSelection(e, options)) {
+    if (this._extendExistingSelection(e, options)) {
         options.setSelected([id].concat(options.selected || []));
     } else if (options.selected  && options.selected.length === 1 && options.selected[0] === id) {
         this.downResetIfNotDrag = true;
@@ -42,7 +55,7 @@ SelectionManager.prototype.down = function (e, id, options) {
     }
 };
 
-SelectionManager.prototype.up = function (e, id, options) {
+SelectionManager.prototype._up = function (e, id, options) {
     var isDrag = Date.now() - this.downPressedTime > 500;
     if (!isDrag && this.downResetIfNotDrag) options.setSelected([]);
 };

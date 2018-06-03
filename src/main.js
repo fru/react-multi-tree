@@ -59,9 +59,12 @@ class Node extends Component {
 		let { groups, multi } = options.normalizationHelper.normalize(list[index], this.props.path);
 		let indent = isMultiNode ? null : options.indentLeft(this.props.path, 0);
 		let inner = multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass}  />;
+		inner = <div style={indent}>{inner}</div>;
+
+		let selected = options.selectionManager.isRowSelected(list[index], multi, options);
 
 		return <Fragment>
-			<div style={indent}>{inner}</div>
+			<div className={options.cx('row', {selected})}>{inner}</div>
 			{ groups && <NodeListChildGroups {...pass} groups={groups} parent={list[index]} /> }
 		</Fragment>;
 	}
