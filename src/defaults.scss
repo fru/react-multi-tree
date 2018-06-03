@@ -6,7 +6,6 @@
 
   padding: $vertical-spacing;
   padding-bottom: 0;
-  //overflow: hidden;
 
   .node {
     margin-bottom: $vertical-spacing;
@@ -41,7 +40,6 @@
 
     .target {
       height: 0;
-      //overflow: hidden;
       position: absolute;
       width: 100%;
 
@@ -76,8 +74,6 @@
     margin: 0 (-$vertical-spacing);
 
     .node {
-      // Use when there is a minimal node size
-      // min-width: 600px;
       flex-grow: 1;
     }
 
