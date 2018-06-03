@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragSource, DropTarget } from 'react-dnd';
@@ -57,14 +57,14 @@ class Node extends Component {
 		let pass = { ...this.props, isParentDragging: isParentDragging || isDragging, parentConnect: connect };
 
 		let { groups, multi } = options.normalizationHelper.normalize(list[index], this.props.path);
-		return <div>
+		return <Fragment>
 			<div className={options.cx('node-anchor')} style={{marginLeft: this.props.marginLeft(0)}}>
 				{ multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass}  /> }
 			</div>
 			<div className={options.cx('list-container')}>
 				{ groups && <NodeListChildGroups {...pass} groups={groups} parent={list[index]} /> }
 			</div>
-		</div>;
+		</Fragment>;
 	}
 }
 
@@ -77,9 +77,8 @@ class Target extends Component {
 	render() {
 		let { options, item, isOver, path, marginLeft } = this.props;
 		let visible = options.dragHelper.targetVisibleCached(this.props, isOver, item, options, path);
-		let first = path.getLastSegment().getIndex() === 0;
 
-		let target = <div className={options.cx('target', {visible, first})} style={{zIndex: path.getDepth() + 100}}>
+		let target = <div className={options.cx('target', {visible})} style={{zIndex: path.getDepth() + 100}}>
 			{isOver && <div className={options.cx('preview')}></div>}
 		</div>;
 

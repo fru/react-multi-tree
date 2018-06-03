@@ -33,11 +33,11 @@ $color-highlight: lighten(#079dc3, 6);
     padding: 7px 8px;
     border-radius: 4px;
     background-color: white;
+  }
 
-    &.selected {
-      background-color: lighten(#079dc3, 50);
-      border: 1px solid #c3c3c3;
-    }
+  .selected .node {
+    background-color: lighten(#079dc3, 50);
+    border: 1px solid #c3c3c3;
   }
 
   .group-container {
