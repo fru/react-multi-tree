@@ -51,8 +51,9 @@
       overflow: hidden;
       position: absolute;
       width: 100%;
+      background-color: red;
 
-      &.dragging {
+      &.visible {
         height: 2 * $target-overlay + $vertical-spacing;
         top: -($target-overlay + $vertical-spacing);
 
@@ -94,7 +95,7 @@
         z-index: 4;
         width: 0;
 
-        &.dragging {
+        &.visible {
           width: 2 * $target-overlay + $vertical-spacing;
           height: auto;
           top: 0;

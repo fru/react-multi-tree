@@ -25,6 +25,10 @@ Path.prototype._asArray = function () {
     return result;
 };
 
+Path.prototype.toString = function () {
+    return this._asArray().join('.');
+};
+
 Path.prototype._splice = function(index, count, ...added) {
     var segments = this.getSegments();
     if (index === null) index = segments.length - count;

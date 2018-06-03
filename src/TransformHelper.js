@@ -1,7 +1,23 @@
 export default function TransformHelper() {}
 
-TransformHelper.prototype._clone = function (context) {
-    return JSON.parse(JSON.stringify(context));
+TransformHelper.prototype._clone = function (obj) {
+    if (obj === null || typeof(obj) !== 'object' || 'isActiveClone' in obj)
+        return obj;
+
+      if (obj instanceof Date)
+        var temp = new obj.constructor();
+      else
+        var temp = obj.constructor();
+
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          obj['isActiveClone'] = null;
+          temp[key] = this._clone(obj[key]);
+          delete obj['isActiveClone'];
+        }
+      }
+
+      return temp;
 };
 
 TransformHelper.prototype._transformToMultiRow = function (parent, index) {

@@ -73,15 +73,14 @@ class Node extends Component {
 }))
 class Target extends Component {
 	render() {
-		let { options, item, isOver } = this.props;
-		let visible = options.dragHelper.targetVisible(this.props, isOver, item);
-		let preview = visible && isOver && options.dragHelper.targetPreview(this.props, isOver, item);
-
-		let target = <div className={options.cx('target', {dragging: visible})}>
-			{preview && <div className={options.cx('preview')}></div>}
+		let { options, item, isOver, path } = this.props;
+		let visible = options.dragHelper.targetVisibleCached(this.props, isOver, item, options, path);
+		
+		let target = <div className={options.cx('target', {visible})}>
+			{isOver && <div className={options.cx('preview')}></div>}
 		</div>;
 
-		return <div className={options.cx('target-anchor')}>
+		return <div className={options.cx('target-anchor', {visible})}>
 			{this.props.connect(target)}
 		</div>;
 	}
