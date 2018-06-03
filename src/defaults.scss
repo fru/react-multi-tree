@@ -6,7 +6,7 @@
 
   padding: $vertical-spacing;
   padding-bottom: 0;
-  overflow: hidden;
+  //overflow: hidden;
 
   .node {
     margin-bottom: $vertical-spacing;
@@ -19,11 +19,6 @@
   .list-container {
     margin-top: -($vertical-spacing + $target-overlay);
     padding-top: ($vertical-spacing + $target-overlay);
-
-    .list-container-inner {
-      //z-index: 3;
-      //position: relative;
-    }
   }
 
   .group-container {
@@ -45,9 +40,8 @@
     position: relative;
 
     .target {
-      //z-index: 2;
       height: 0;
-      overflow: hidden;
+      //overflow: hidden;
       position: absolute;
       width: 100%;
 
@@ -78,16 +72,18 @@
 
   .node-multi-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     margin: 0 (-$vertical-spacing);
 
     .node {
+      // Use when there is a minimal node size
+      // min-width: 600px;
       flex-grow: 1;
-      min-width: 200px;
     }
 
     .target-anchor {
       width: $vertical-spacing;
+      min-width: $vertical-spacing;
 
       .target {
         z-index: 200 !important;
@@ -116,9 +112,10 @@
           right: auto;
           height: auto;
         }
+      }
 
-
-        &.visible.first {
+      &:first-child, &:last-child {
+        .target {
           width: $target-overlay + $vertical-spacing;
         }
       }

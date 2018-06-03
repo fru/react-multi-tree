@@ -7,10 +7,7 @@ import { defaultOptions, getContext } from './options';
 const NodeList = ({ path, ...context }) => {
 
 	let { Target, Node, cx, indent, indentUnit } = context.options;
-	context.marginLeft = (added) => {
-		console.log(path.toString() + ': ' + path.getDepth());
-		return (added + path.getDepth()) * indent + indentUnit;
-	};
+	context.marginLeft = (added) => (added + path.getDepth()) * indent + indentUnit;
 	if (context.isMultiNode) context.marginLeft = () => 0;
 	
 	let content = [<Target {...context} index={0} path={path.setIndex(0)} key={0} />];
