@@ -11,6 +11,7 @@ export default function Path(segments) {
     segments = segments || [new Segment([])];
     this.getSegments = () => segments.slice();
     this.getLastSegment = () => segments[segments.length - 1];
+    this.getDepth = () => segments.length - 1;
 }
 
 

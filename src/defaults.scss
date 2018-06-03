@@ -1,7 +1,6 @@
 .anyform-tree {
 
   $vertical-spacing: 5px !default;
-  $horizontal-spacing: 18px !default;
   $target-overlay: 10px !default;
   $color-highlight: lighten(#079dc3, 6) !default;
 
@@ -17,13 +16,12 @@
   }
 
   .list-container {
-    margin-left: $horizontal-spacing;
     margin-top: -($vertical-spacing + $target-overlay);
     padding-top: ($vertical-spacing + $target-overlay);
 
     .list-container-inner {
-      z-index: 3;
-      position: relative;
+      //z-index: 3;
+      //position: relative;
     }
   }
 
@@ -46,12 +44,11 @@
     position: relative;
 
     .target {
-      z-index: 2;
+      //z-index: 2;
       height: 0;
       overflow: hidden;
       position: absolute;
       width: 100%;
-      background-color: red;
 
       &.visible {
         height: 2 * $target-overlay + $vertical-spacing;
@@ -92,7 +89,7 @@
       width: $vertical-spacing;
 
       .target {
-        z-index: 4;
+        z-index: 200 !important;
         width: 0;
 
         &.visible {
@@ -108,6 +105,10 @@
           -ms-transition: width 500ms;
           -o-transition: width 500ms;
           transition: width 500ms;
+        }
+
+        &.visible.first {
+          width: $target-overlay + $vertical-spacing;
         }
 
         .preview {

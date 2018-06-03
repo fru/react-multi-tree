@@ -13,6 +13,8 @@ export const defaultOptions = ($tree) => {
 
         // Defaults
 
+        indent: 18,
+        indentUnit: 'px',
         propId: 'id',
         propContains: 'contains',
         propMulti: 'multi',

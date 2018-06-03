@@ -6,7 +6,12 @@ import { defaultOptions, getContext } from './options';
 
 const NodeList = ({ path, ...context }) => {
 
-	let { Target, Node, cx } = context.options;
+	let { Target, Node, cx, indent, indentUnit } = context.options;
+	context.marginLeft = (added) => {
+		console.log(path.toString() + ': ' + path.getDepth());
+		return (added + path.getDepth()) * indent + indentUnit;
+	};
+	if (context.isMultiNode) context.marginLeft = () => 0;
 	
 	let content = [<Target {...context} index={0} path={path.setIndex(0)} key={0} />];
 
@@ -22,10 +27,10 @@ const NodeList = ({ path, ...context }) => {
 
 // Children grouped by property, that may have a title
 
-const NodeListChildGroups = ({ groups, path, ...context }) => groups.map((group) => {
+const NodeListChildGroups = ({ groups, path, marginLeft, ...context }) => groups.map((group) => {
 
 	let titleClass = context.options.cx('group-container');
-	let title = group.title && <div className={titleClass}>{group.title}</div>
+	let title = group.title && <div className={titleClass} style={{marginLeft: marginLeft(1)}}>{group.title}</div>
 	let list = <NodeList {...context} group={group.prop} path={group.path} list={group.list} />
 
 	return <div key={group.prop}>{title}{list}</div>
@@ -56,8 +61,8 @@ class Node extends Component {
 
 		let { groups, multi } = options.normalizationHelper.normalize(list[index], this.props.path);
 		return <div>
-			<div className={options.cx('node-anchor')}>
-				{ multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass} /> }
+			<div className={options.cx('node-anchor')} style={{marginLeft: this.props.marginLeft(0)}}>
+				{ multi ? <NodeList {...pass} isMultiNode={true} {...multi} /> : <NodeInner {...pass}  /> }
 			</div>
 			<div className={options.cx('list-container')}>
 				{ groups && <NodeListChildGroups {...pass} groups={groups} parent={list[index]} /> }
@@ -73,14 +78,15 @@ class Node extends Component {
 }))
 class Target extends Component {
 	render() {
-		let { options, item, isOver, path } = this.props;
+		let { options, item, isOver, path, marginLeft } = this.props;
 		let visible = options.dragHelper.targetVisibleCached(this.props, isOver, item, options, path);
-		
-		let target = <div className={options.cx('target', {visible})}>
+		let first = path.getLastSegment().getIndex() === 0;
+
+		let target = <div className={options.cx('target', {visible, first})} style={{zIndex: path.getDepth() + 100}}>
 			{isOver && <div className={options.cx('preview')}></div>}
 		</div>;
 
-		return <div className={options.cx('target-anchor', {visible})}>
+		return <div className={options.cx('target-anchor', {visible})} style={{marginLeft: marginLeft(0)}}>
 			{this.props.connect(target)}
 		</div>;
 	}
