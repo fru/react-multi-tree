@@ -40,9 +40,9 @@ $color-highlight: lighten(#079dc3, 6);
     border: 1px solid #c3c3c3;
   }
 
-  .row.selected {
-    background-color: lightgrey;
-  }
+  //.row.selected {
+    //background-color: lightgrey;
+  //}
 
   .group-container {
     color: darken(#707070, 25);

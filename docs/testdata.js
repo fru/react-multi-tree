@@ -7,7 +7,7 @@ export let testdata = [
         id: "A1",
         title: "A1",
         allowMultiRow: false,
-        allowSibling: function ({parent}) { return !parent; },
+        //allowSibling: function ({parent}) { return !parent; },
         },
         {
             if: "AAA",
